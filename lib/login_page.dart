@@ -1,17 +1,10 @@
+// ignore_for_file: depend_on_referenced_packages, sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
-import 'const_var.dart';
-
-class RootLoginPage extends StatelessWidget {
-  const RootLoginPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginPage(),
-    );
-  }
-}
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:telegraph/google_auth.dart';
+import 'package:telegraph/register_page.dart';
+import 'package:telegraph/const_var.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,15 +14,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool showPassword = false;
+  String? errorMessage = '';
+
+  // Communicate with the firebase to authenticate user
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await GoogleAuth().signInWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+
+    debugPrint(errorMessage);
+  }
 
   // AppBar
   AppBar appBarComponent() {
     return AppBar(
       backgroundColor: productColor,
-      title: const Text("Login or Register"),
+      title: const Text("Login"),
     );
   }
 
@@ -83,8 +91,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  TextButton loginButton() {
-    return TextButton(
+  ElevatedButton loginButton() {
+    return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
         foregroundColor: defaultWhite,
@@ -92,8 +100,7 @@ class _LoginPageState extends State<LoginPage> {
         shape: const StadiumBorder(),
       ),
       onPressed: () {
-        debugPrint(userNameController.text);
-        debugPrint(passwordController.text);
+        signInWithEmailAndPassword();
       },
       child: const Text(
         "LOGIN",
@@ -106,9 +113,15 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Row register() {
+  Row registerButton() {
     const TextStyle localStyle = TextStyle(
       color: defaultBlack,
+      fontSize: 16.0,
+    );
+
+    const TextStyle signUpStyle = TextStyle(
+      color: defaultBlue,
+      fontWeight: FontWeight.bold,
       fontSize: 16.0,
     );
 
@@ -116,12 +129,18 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Don't have an account?", style: localStyle),
-        TextButton(
-          style: TextButton.styleFrom(splashFactory: NoSplash.splashFactory),
-          onPressed: () {
-            debugPrint("Register");
-          },
-          child: const Text("Sign up", style: localStyle),
+        Container(
+          margin: const EdgeInsets.only(left: 5.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (BuildContext context) {
+                  return const RegisterPage();
+                }),
+              );
+            },
+            child: const Text("Sign up", style: signUpStyle),
+          ),
         ),
       ],
     );
@@ -169,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
         Flexible(
           child: Container(
             padding: loginDefaultPadding,
-            child: textInput("Username", false, userNameController),
+            child: textInput("Username", false, emailController),
           ),
         ),
         Flexible(
@@ -188,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
         Flexible(
           child: Container(
             padding: loginSecondaryPadding,
-            child: register(),
+            child: registerButton(),
           ),
         ),
         Flexible(
