@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:telegraph/google_auth.dart';
 import 'package:telegraph/register_page.dart';
 import 'package:telegraph/const_var.dart';
@@ -35,8 +36,11 @@ class _LoginPageState extends State<LoginPage> {
   // AppBar
   AppBar appBar() {
     return AppBar(
-      backgroundColor: productColor,
-      title: const Text("Login"),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: productColor,
+      ),
     );
   }
 
