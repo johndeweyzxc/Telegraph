@@ -16,7 +16,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  bool showPassword = false;
   String? errorMessage = '';
 
   // Communicate with the firebase to authenticate user
@@ -34,16 +33,117 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // AppBar
-  AppBar appBarComponent() {
+  AppBar appBar() {
     return AppBar(
       backgroundColor: productColor,
       title: const Text("Login"),
     );
   }
 
+  // Body
+  Column pageBody() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Container(
+            padding: loginDefaultPadding,
+            child: LoginTextInput(
+              label: "Email",
+              password: false,
+              controller: emailController,
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: loginDefaultPadding,
+            child: LoginTextInput(
+              label: "Password",
+              password: true,
+              controller: passwordController,
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 0.0),
+            width: widthScreen(context),
+            child: LoginButton(
+              signIn: () async {
+                await signInWithEmailAndPassword();
+              },
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: loginSecondaryPadding,
+            child: RegisterText(context: context),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: loginSecondaryPadding,
+            child: const Divider(
+              color: defaultGrey,
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: loginSecondaryPadding,
+            child: const Text(
+              "or login with",
+              style: TextStyle(
+                color: defaultGrey,
+              ),
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: loginDefaultPadding,
+            child: const ThirdPartyLogin(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: appBar(),
+      body: pageBody(),
+    );
+  }
+}
+
+// Widget for getting email and password for authentication
+class LoginTextInput extends StatefulWidget {
+  final String label;
+  final bool password;
+  final TextEditingController controller;
+
+  const LoginTextInput({
+    super.key,
+    required this.label,
+    required this.password,
+    required this.controller,
+  });
+
+  @override
+  State<LoginTextInput> createState() => _TextInputState();
+}
+
+class _TextInputState extends State<LoginTextInput> {
+  bool showPassword = false;
+
   // Returns an icon if the input type is password
-  IconButton? isPassword(bool password) {
-    if (password) {
+  IconButton? isPassword() {
+    if (widget.password) {
       return IconButton(
         onPressed: () {
           setState(() {
@@ -57,23 +157,24 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // If the input type is password
-  bool obscureText(bool password) {
-    if (password) {
+  // If the input type is password return either true or false otherwise
+  // always return false
+  bool obscureText() {
+    if (widget.password) {
       return showPassword ? false : true;
     } else {
       return false;
     }
   }
 
-  TextFormField textInput(
-      String label, bool password, TextEditingController controller) {
+  @override
+  Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
+      controller: widget.controller,
       style: const TextStyle(fontSize: logintTextSizeSmall),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(10.0),
-        labelText: label,
+        labelText: widget.label,
         labelStyle: const TextStyle(color: defaultBlack),
         border: const OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
@@ -84,14 +185,22 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(50.0),
           borderSide: const BorderSide(color: productColor),
         ),
-        suffixIcon: isPassword(password),
+        suffixIcon: isPassword(),
       ),
       maxLength: 20,
-      obscureText: obscureText(password),
+      obscureText: obscureText(),
     );
   }
+}
 
-  ElevatedButton loginButton() {
+// Login button, takes signInWithEmailAndPassword Future to authenticate
+class LoginButton extends StatelessWidget {
+  final VoidCallback signIn;
+
+  const LoginButton({super.key, required this.signIn});
+
+  @override
+  Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
@@ -99,9 +208,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: productColor,
         shape: const StadiumBorder(),
       ),
-      onPressed: () {
-        signInWithEmailAndPassword();
-      },
+      onPressed: signIn,
       child: const Text(
         "LOGIN",
         style: TextStyle(
@@ -112,8 +219,20 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
 
-  Row registerButton() {
+// This is the 'Sign up' text below the login button, when tap goes to another
+// page to register a new user.
+class RegisterText extends StatelessWidget {
+  const RegisterText({
+    Key? key,
+    required this.context,
+  }) : super(key: key);
+
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
     const TextStyle localStyle = TextStyle(
       color: defaultBlack,
       fontSize: 16.0,
@@ -145,8 +264,16 @@ class _LoginPageState extends State<LoginPage> {
       ],
     );
   }
+}
 
-  Row thirdPartyLogin() {
+// User can login with google, facebook or apple
+class ThirdPartyLogin extends StatelessWidget {
+  const ThirdPartyLogin({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -178,82 +305,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ],
-    );
-  }
-
-  Column loginInput() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: textInput("Username", false, emailController),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: textInput("Password", true, passwordController),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 0.0),
-            width: widthScreen(context),
-            child: loginButton(),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginSecondaryPadding,
-            child: registerButton(),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginSecondaryPadding,
-            child: const Divider(
-              color: defaultGrey,
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginSecondaryPadding,
-            child: const Text(
-              "or login with",
-              style: TextStyle(
-                color: defaultGrey,
-              ),
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: thirdPartyLogin(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Body
-  Container pageBody() {
-    return Container(
-      width: widthScreen(context),
-      height: heightScreen(context),
-      child: loginInput(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: appBarComponent(),
-      body: pageBody(),
     );
   }
 }
