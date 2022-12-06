@@ -45,68 +45,25 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: LoginTextInput(
-              label: "Email",
-              password: false,
-              controller: emailController,
-            ),
-          ),
+        LoginTextInput(
+          label: "Email",
+          password: false,
+          controller: emailController,
         ),
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: LoginTextInput(
-              label: "Password",
-              password: true,
-              controller: passwordController,
-            ),
-          ),
+        LoginTextInput(
+          label: "Password",
+          password: true,
+          controller: passwordController,
         ),
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 0.0),
-            width: widthScreen(context),
-            child: LoginButton(
-              signIn: () async {
-                await signInWithEmailAndPassword();
-              },
-            ),
-          ),
+        LoginButton(
+          signIn: () async {
+            await signInWithEmailAndPassword();
+          },
         ),
-        Flexible(
-          child: Container(
-            padding: loginSecondaryPadding,
-            child: RegisterText(context: context),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginSecondaryPadding,
-            child: const Divider(
-              color: defaultGrey,
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginSecondaryPadding,
-            child: const Text(
-              "or login with",
-              style: TextStyle(
-                color: defaultGrey,
-              ),
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: const ThirdPartyLogin(),
-          ),
-        ),
+        RegisterText(context: context),
+        const DividerLine(),
+        const LoginWith(),
+        const ThirdPartyLogin(),
       ],
     );
   }
@@ -169,26 +126,29 @@ class _TextInputState extends State<LoginTextInput> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      style: const TextStyle(fontSize: logintTextSizeSmall),
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(10.0),
-        labelText: widget.label,
-        labelStyle: const TextStyle(color: defaultBlack),
-        border: const OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50.0),
-          borderSide: const BorderSide(color: productColor),
+    return SizedBox(
+      width: widthScreen(context) - 50.0,
+      child: TextFormField(
+        controller: widget.controller,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(10.0),
+          labelText: widget.label,
+          labelStyle: const TextStyle(
+              color: defaultBlack, fontSize: logintTextSizeSmall),
+          border: const OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50.0),
+            borderSide: const BorderSide(color: productColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50.0),
+            borderSide: const BorderSide(color: productColor, width: 2.0),
+          ),
+          suffixIcon: isPassword(),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50.0),
-          borderSide: const BorderSide(color: productColor),
-        ),
-        suffixIcon: isPassword(),
+        maxLength: 20,
+        obscureText: obscureText(),
       ),
-      maxLength: 20,
-      obscureText: obscureText(),
     );
   }
 }
@@ -203,7 +163,7 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+        padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
         foregroundColor: defaultWhite,
         backgroundColor: productColor,
         shape: const StadiumBorder(),
@@ -244,24 +204,55 @@ class RegisterText extends StatelessWidget {
       fontSize: 16.0,
     );
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Don't have an account?", style: localStyle),
-        Container(
-          margin: const EdgeInsets.only(left: 5.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (BuildContext context) {
-                  return const RegisterPage();
-                }),
-              );
-            },
-            child: const Text("Sign up", style: signUpStyle),
+    return Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Don't have an account?", style: localStyle),
+          Container(
+            margin: const EdgeInsets.only(left: 5.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return const RegisterPage();
+                  }),
+                );
+              },
+              child: const Text("Sign up", style: signUpStyle),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+}
+
+// Divider between Sign up and login with
+class DividerLine extends StatelessWidget {
+  const DividerLine({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: widthScreen(context) - 50.0,
+      margin: const EdgeInsets.only(top: 10.0),
+      child: const Divider(color: defaultGrey),
+    );
+  }
+}
+
+class LoginWith extends StatelessWidget {
+  const LoginWith({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const TextStyle textStyle = TextStyle(color: defaultGrey);
+
+    return Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      child: const Text("or login with", style: textStyle),
     );
   }
 }
@@ -272,39 +263,82 @@ class ThirdPartyLogin extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  Container google() {
+    return Container(
+      margin: const EdgeInsets.only(right: 10.0),
+      child: ElevatedButton.icon(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.white),
+        ),
+        onPressed: () {},
+        icon: Image.asset(
+          "assets/images/google-icon.png",
+          height: 30.0,
+        ),
+        label: const Text(
+          "Google",
+          style: TextStyle(color: defaultBlack),
+        ),
+      ),
+    );
+  }
+
+  ElevatedButton facebook() {
+    return ElevatedButton.icon(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          const Color.fromARGB(255, 3, 155, 229),
+        ),
+      ),
+      onPressed: () {},
+      icon: Image.asset(
+        "assets/images/facebook-icon.png",
+        height: 30.0,
+      ),
+      label: const Text(
+        "Facebook",
+        style: TextStyle(color: defaultWhite),
+      ),
+    );
+  }
+
+  ElevatedButton apple() {
+    return ElevatedButton.icon(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(defaultWhite),
+      ),
+      onPressed: () {
+        debugPrint("Apple!");
+      },
+      icon: Image.asset(
+        "assets/images/apple-icon.png",
+        height: 30.0,
+      ),
+      label: const Text(
+        "Apple",
+        style: TextStyle(
+          color: defaultBlack,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          margin: null,
-          child: IconButton(
-            onPressed: () {
-              debugPrint("Google!");
-            },
-            icon: Image.asset("assets/images/google-icon.png"),
+    return Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              google(),
+              facebook(),
+            ],
           ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-          child: IconButton(
-            onPressed: () {
-              debugPrint("Facebook!");
-            },
-            icon: Image.asset("assets/images/facebook-icon.png"),
-          ),
-        ),
-        Container(
-          margin: null,
-          child: IconButton(
-            onPressed: () {
-              debugPrint("Apple!");
-            },
-            icon: Image.asset("assets/images/apple-icon.png"),
-          ),
-        ),
-      ],
+          apple(),
+        ],
+      ),
     );
   }
 }
