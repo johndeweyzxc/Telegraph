@@ -17,21 +17,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmController = TextEditingController();
   bool showPassword = false;
-  bool passwordNotMatch = false;
   String? errorMessage = '';
 
   // Communicate with the firebase to create a new user
   Future<void> createUserWithEmailAndPassword() async {
     // Password and confirm password did not match
     if (passwordController.text != confirmController.text) {
-      setState(() {
-        passwordNotMatch = true;
-      });
+      debugPrint("Password does not match!");
       return;
-    } else {
-      setState(() {
-        passwordNotMatch = false;
-      });
     }
 
     try {
@@ -44,7 +37,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     print(GoogleAuth().currentUser);
-
     debugPrint(errorMessage);
   }
 
@@ -52,99 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return AppBar(
       backgroundColor: productColor,
       title: const Text("Register"),
-    );
-  }
-
-  // Returns an icon 'visibility' if the input type is password,
-  // otherwise return a 'close' icon
-  IconButton isPassword(bool password) {
-    if (password) {
-      return IconButton(
-        onPressed: () {
-          setState(() {
-            showPassword = !showPassword;
-          });
-        },
-        icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
-      );
-    } else {
-      return IconButton(
-        onPressed: () {
-          emailController.clear();
-        },
-        icon: const Icon(Icons.close),
-      );
-    }
-  }
-
-  bool obscureText(bool password) {
-    if (password) {
-      return showPassword ? false : true;
-    } else {
-      return false;
-    }
-  }
-
-  // Text input for email, password and confirm password
-  TextFormField registerTextInput(
-      String label, bool password, TextEditingController controller) {
-    OutlineInputBorder outline = const OutlineInputBorder(
-      borderSide: BorderSide(color: productColor),
-    );
-
-    String? returnError() {
-      if (label == "Confirm Password") {
-        return passwordNotMatch ? "Password did not match" : null;
-      }
-      return null;
-    }
-
-    InputDecoration decor = InputDecoration(
-      contentPadding: const EdgeInsets.all(10.0),
-      labelText: label,
-      labelStyle: const TextStyle(color: defaultBlack),
-      border: const OutlineInputBorder(),
-      enabledBorder: outline,
-      focusedBorder: outline,
-      suffixIcon: isPassword(password),
-      errorText: returnError(),
-    );
-
-    return TextFormField(
-      controller: controller,
-      style: const TextStyle(fontSize: logintTextSizeSmall),
-      decoration: decor,
-      obscureText: obscureText(password),
-      maxLength: 40,
-    );
-  }
-
-  // Submit button to send all user credential to the database
-  ElevatedButton registerButton() {
-    final buttonStyle = ElevatedButton.styleFrom(
-      padding: const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-      foregroundColor: defaultWhite,
-      backgroundColor: productColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-    );
-
-    const TextStyle textStyle = TextStyle(
-      fontSize: logintTextSizeSmall,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 2.0,
-    );
-
-    return ElevatedButton(
-      style: buttonStyle,
-      onPressed: () {
-        createUserWithEmailAndPassword();
-      },
-      child: const Text(
-        "REGISTER",
-        style: textStyle,
-      ),
     );
   }
 
@@ -157,28 +56,35 @@ class _RegisterPageState extends State<RegisterPage> {
         Flexible(
           child: Container(
             padding: loginDefaultPadding,
-            child: registerTextInput("Email", false, emailController),
+            child: RegisterInput(
+              label: "Email",
+              password: false,
+              controller: emailController,
+            ),
           ),
         ),
         Flexible(
           child: Container(
             padding: loginDefaultPadding,
-            child: registerTextInput("Password", true, passwordController),
+            child: RegisterInput(
+                label: "Password",
+                password: true,
+                controller: passwordController),
           ),
         ),
         Flexible(
           child: Container(
             padding: loginDefaultPadding,
-            child:
-                registerTextInput("Confirm Password", true, confirmController),
+            child: RegisterInput(
+                label: "Confirm Password",
+                password: true,
+                controller: confirmController),
           ),
         ),
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 0.0),
-            width: widthScreen(context),
-            child: registerButton(),
-          ),
+        RegisterButton(
+          register: () async {
+            await createUserWithEmailAndPassword();
+          },
         ),
       ],
     );
@@ -198,6 +104,113 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: appBarComponent(),
       body: appBody(),
+    );
+  }
+}
+
+// Text field input to get user information such as email and password.
+class RegisterInput extends StatefulWidget {
+  final String label;
+  final bool password;
+  final TextEditingController controller;
+
+  const RegisterInput({
+    super.key,
+    required this.label,
+    required this.password,
+    required this.controller,
+  });
+
+  @override
+  State<RegisterInput> createState() => _RegisterInputState();
+}
+
+class _RegisterInputState extends State<RegisterInput> {
+  bool showPassword = false;
+  OutlineInputBorder outline = const OutlineInputBorder(
+    borderSide: BorderSide(color: productColor),
+  );
+
+  // Returns an icon 'visibility' if the input type is password,
+  // otherwise return a 'close' icon
+  IconButton isPassword() {
+    if (widget.password) {
+      return IconButton(
+        onPressed: () {
+          setState(() {
+            showPassword = !showPassword;
+          });
+        },
+        icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
+      );
+    } else {
+      return IconButton(
+        onPressed: () {
+          widget.controller.clear();
+        },
+        icon: const Icon(Icons.close),
+      );
+    }
+  }
+
+  bool obscureText() {
+    if (widget.password) {
+      return showPassword ? false : true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    InputDecoration decor = InputDecoration(
+      contentPadding: const EdgeInsets.all(10.0),
+      labelText: widget.label,
+      labelStyle: const TextStyle(color: defaultBlack),
+      border: const OutlineInputBorder(),
+      enabledBorder: outline,
+      focusedBorder: outline,
+      suffixIcon: isPassword(),
+    );
+
+    return TextFormField(
+      controller: widget.controller,
+      style: const TextStyle(fontSize: logintTextSizeSmall),
+      decoration: decor,
+      obscureText: obscureText(),
+      maxLength: 40,
+    );
+  }
+}
+
+// Register button to create a new user
+class RegisterButton extends StatelessWidget {
+  final VoidCallback register;
+
+  const RegisterButton({super.key, required this.register});
+
+  @override
+  Widget build(BuildContext context) {
+    var buttonStyle = ElevatedButton.styleFrom(
+      padding: const EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+      foregroundColor: defaultWhite,
+      backgroundColor: productColor,
+      shape: const StadiumBorder(),
+    );
+
+    const TextStyle textStyle = TextStyle(
+      fontSize: logintTextSizeSmall,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 2.0,
+    );
+
+    return ElevatedButton(
+      style: buttonStyle,
+      onPressed: register,
+      child: const Text(
+        "REGISTER",
+        style: textStyle,
+      ),
     );
   }
 }
