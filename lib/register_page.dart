@@ -53,49 +53,28 @@ class _RegisterPageState extends State<RegisterPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: RegisterInput(
-              label: "Email",
-              password: false,
-              controller: emailController,
-            ),
-          ),
+        RegisterInput(
+          label: "Email",
+          password: false,
+          controller: emailController,
         ),
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: RegisterInput(
-                label: "Password",
-                password: true,
-                controller: passwordController),
-          ),
+        RegisterInput(
+          label: "Password",
+          password: true,
+          controller: passwordController,
         ),
-        Flexible(
-          child: Container(
-            padding: loginDefaultPadding,
-            child: RegisterInput(
-                label: "Confirm Password",
-                password: true,
-                controller: confirmController),
-          ),
+        RegisterInput(
+          label: "Confirm Password",
+          password: true,
+          controller: confirmController,
         ),
         RegisterButton(
           register: () async {
             await createUserWithEmailAndPassword();
           },
         ),
+        const LoginInstead(),
       ],
-    );
-  }
-
-  // Body
-  Container appBody() {
-    return Container(
-      width: widthScreen(context),
-      height: heightScreen(context),
-      child: registerInputs(),
     );
   }
 
@@ -103,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarComponent(),
-      body: appBody(),
+      body: Center(child: registerInputs()),
     );
   }
 }
@@ -173,12 +152,18 @@ class _RegisterInputState extends State<RegisterInput> {
       suffixIcon: isPassword(),
     );
 
-    return TextFormField(
-      controller: widget.controller,
-      style: const TextStyle(fontSize: logintTextSizeSmall),
-      decoration: decor,
-      obscureText: obscureText(),
-      maxLength: 40,
+    return SizedBox(
+      width: widthScreen(context) - 50.0,
+      child: Container(
+        margin: const EdgeInsets.only(top: 10.0),
+        child: TextFormField(
+          controller: widget.controller,
+          style: const TextStyle(fontSize: logintTextSizeSmall),
+          decoration: decor,
+          obscureText: obscureText(),
+          maxLength: 40,
+        ),
+      ),
     );
   }
 }
@@ -192,10 +177,9 @@ class RegisterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var buttonStyle = ElevatedButton.styleFrom(
-      padding: const EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+      padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
       foregroundColor: defaultWhite,
       backgroundColor: productColor,
-      shape: const StadiumBorder(),
     );
 
     const TextStyle textStyle = TextStyle(
@@ -211,6 +195,33 @@ class RegisterButton extends StatelessWidget {
         "REGISTER",
         style: textStyle,
       ),
+    );
+  }
+}
+
+// Login instead TextButton will go back to the login page of the app
+class LoginInstead extends StatelessWidget {
+  const LoginInstead({super.key});
+
+  TextButton loginInsteadText(BuildContext context) {
+    const TextStyle textStyle = TextStyle(
+        color: defaultBlue, fontWeight: FontWeight.bold, fontSize: 16.0);
+
+    return TextButton(
+      onPressed: () {
+        Navigator.of(context).pop(true);
+      },
+      child: const Text(
+        "I have an account",
+        style: textStyle,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: loginInsteadText(context),
     );
   }
 }
