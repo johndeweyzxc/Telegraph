@@ -132,26 +132,28 @@ class _TextInputState extends State<LoginTextInput> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: widthScreen(context) - 50.0,
-      child: TextFormField(
-        controller: widget.controller,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(10.0),
-          labelText: widget.label,
-          labelStyle: const TextStyle(
-              color: defaultBlack, fontSize: logintTextSizeSmall),
-          border: const OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50.0),
-            borderSide: const BorderSide(color: productColor),
+      child: Container(
+        margin: const EdgeInsets.only(top: 15.0),
+        child: TextFormField(
+          controller: widget.controller,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(10.0),
+            labelText: widget.label,
+            labelStyle: const TextStyle(
+                color: defaultBlack, fontSize: logintTextSizeSmall),
+            border: const OutlineInputBorder(),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              borderSide: const BorderSide(color: productColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              borderSide: const BorderSide(color: productColor, width: 2.0),
+            ),
+            suffixIcon: isPassword(),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50.0),
-            borderSide: const BorderSide(color: productColor, width: 2.0),
-          ),
-          suffixIcon: isPassword(),
+          obscureText: obscureText(),
         ),
-        maxLength: 20,
-        obscureText: obscureText(),
       ),
     );
   }
@@ -165,20 +167,23 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
-        foregroundColor: defaultWhite,
-        backgroundColor: productColor,
-        shape: const StadiumBorder(),
-      ),
-      onPressed: signIn,
-      child: const Text(
-        "LOGIN",
-        style: TextStyle(
-          fontSize: loginTextSizeBig,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 2.0,
+    return Container(
+      margin: const EdgeInsets.only(top: 15.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
+          foregroundColor: defaultWhite,
+          backgroundColor: productColor,
+          shape: const StadiumBorder(),
+        ),
+        onPressed: signIn,
+        child: const Text(
+          "LOGIN",
+          style: TextStyle(
+            fontSize: loginTextSizeBig,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2.0,
+          ),
         ),
       ),
     );
