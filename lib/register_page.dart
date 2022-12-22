@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/const_var.dart';
-import 'package:telegraph/google_auth.dart';
+import 'package:telegraph/Auth/sign_in_email.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -28,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     try {
-      await GoogleAuth().createUserWithEmailAndPassword(
+      await EmailAuth().createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -36,7 +36,6 @@ class _RegisterPageState extends State<RegisterPage> {
       });
     }
 
-    print(GoogleAuth().currentUser);
     debugPrint(errorMessage);
   }
 

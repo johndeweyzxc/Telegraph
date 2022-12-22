@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:telegraph/google_auth.dart';
+import 'package:telegraph/Auth/sign_in_google.dart';
+import 'package:telegraph/Auth/sign_in_email.dart';
 import 'package:telegraph/register_page.dart';
 import 'package:telegraph/const_var.dart';
 
@@ -22,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   // Communicate with the firebase to authenticate user
   Future<void> signInWithEmailAndPassword() async {
     try {
-      await GoogleAuth().signInWithEmailAndPassword(
+      await EmailAuth().signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -279,7 +280,9 @@ class ThirdPartyLogin extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.white),
         ),
-        onPressed: () {},
+        onPressed: () {
+          GoogleAuth().googleLogin();
+        },
         icon: Image.asset(
           "assets/images/google-icon.png",
           height: 30.0,
@@ -299,7 +302,9 @@ class ThirdPartyLogin extends StatelessWidget {
           const Color.fromARGB(255, 3, 155, 229),
         ),
       ),
-      onPressed: () {},
+      onPressed: () {
+        debugPrint("Facebook!");
+      },
       icon: Image.asset(
         "assets/images/facebook-icon.png",
         height: 30.0,

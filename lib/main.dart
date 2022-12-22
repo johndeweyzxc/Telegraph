@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:telegraph/home_page.dart';
 import 'package:telegraph/login_page.dart';
-import 'package:telegraph/google_auth.dart';
+import 'package:telegraph/Auth/auth_instance.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +35,7 @@ class _WidgetTreeState extends State<WidgetTree> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: GoogleAuth().authStateChanges,
+      stream: AuthInstance().firebaseAuth.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return const HomePage();

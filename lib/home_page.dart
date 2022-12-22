@@ -1,5 +1,8 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
-import 'package:telegraph/google_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:telegraph/Auth/auth_instance.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,16 +12,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final User? user = AuthInstance().firebaseAuth.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Home"),
+        title: Text(user?.email ?? 'user email'),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            GoogleAuth().signOut();
+            AuthInstance().signOut();
           },
           child: const Text("Log out"),
         ),
