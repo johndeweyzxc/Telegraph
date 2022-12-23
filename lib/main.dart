@@ -2,9 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:telegraph/home_page.dart';
-import 'package:telegraph/login_page.dart';
-import 'package:telegraph/Auth/auth_instance.dart';
+
+import 'package:telegraph/widget_tree.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,29 +19,6 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: WidgetTree(),
-    );
-  }
-}
-
-class WidgetTree extends StatefulWidget {
-  const WidgetTree({super.key});
-
-  @override
-  State<WidgetTree> createState() => _WidgetTreeState();
-}
-
-class _WidgetTreeState extends State<WidgetTree> {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: AuthInstance().firebaseAuth.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return const HomePage();
-        } else {
-          return const LoginPage();
-        }
-      },
     );
   }
 }
