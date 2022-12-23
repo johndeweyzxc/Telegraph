@@ -39,49 +39,73 @@ class _RegisterPageState extends State<RegisterPage> {
     debugPrint(errorMessage);
   }
 
-  AppBar appBarComponent() {
+  AppBar appBar() {
     return AppBar(
       backgroundColor: productColor,
-      title: const Text("Register"),
+      title: const Text("Create an account"),
     );
   }
 
   // This is where the email, password, confirm password and register button
   // is located.
-  Column registerInputs() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        RegisterInput(
-          label: "Email",
-          password: false,
-          controller: emailController,
-        ),
-        RegisterInput(
-          label: "Password",
-          password: true,
-          controller: passwordController,
-        ),
-        RegisterInput(
-          label: "Confirm Password",
-          password: true,
-          controller: confirmController,
-        ),
-        RegisterButton(
-          register: () async {
-            await createUserWithEmailAndPassword();
-          },
-        ),
-        const LoginInstead(),
-      ],
+  Container pageBody() {
+    return Container(
+      width: widthScreen(context) - 50.0,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RegisterInput(
+                  label: "Email",
+                  password: false,
+                  controller: emailController,
+                ),
+                RegisterInput(
+                  label: "Password",
+                  password: true,
+                  controller: passwordController,
+                ),
+                RegisterInput(
+                  label: "Confirm Password",
+                  password: true,
+                  controller: confirmController,
+                ),
+                RegisterButton(
+                  register: () async {
+                    await createUserWithEmailAndPassword();
+                  },
+                ),
+                const PrivacyPolicy(),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 25.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  LoginInstead(),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarComponent(),
-      body: Center(child: registerInputs()),
+      resizeToAvoidBottomInset: false,
+      appBar: appBar(),
+      body: Center(
+        child: pageBody(),
+      ),
     );
   }
 }
@@ -139,29 +163,47 @@ class _RegisterInputState extends State<RegisterInput> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    InputDecoration decor = InputDecoration(
+  final OutlineInputBorder inputEnabledBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0),
+    borderSide: const BorderSide(color: productColor),
+  );
+
+  final OutlineInputBorder inputFocusedBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0),
+    borderSide: const BorderSide(color: productColor, width: 2.0),
+  );
+
+  InputDecoration inputDecoration() {
+    Padding startIcon = Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Icon(
+        widget.label == "Password" ? Icons.lock : Icons.mail,
+        color: defaultBlack,
+      ),
+    );
+
+    return InputDecoration(
       contentPadding: const EdgeInsets.all(10.0),
       labelText: widget.label,
       labelStyle: const TextStyle(color: defaultBlack),
       border: const OutlineInputBorder(),
-      enabledBorder: outline,
-      focusedBorder: outline,
+      enabledBorder: inputEnabledBorder,
+      focusedBorder: inputFocusedBorder,
       suffixIcon: isPassword(),
+      prefixIcon: startIcon,
     );
+  }
 
-    return SizedBox(
-      width: widthScreen(context) - 50.0,
-      child: Container(
-        margin: const EdgeInsets.only(top: 10.0),
-        child: TextFormField(
-          controller: widget.controller,
-          style: const TextStyle(fontSize: logintTextSizeSmall),
-          decoration: decor,
-          obscureText: obscureText(),
-          maxLength: 40,
-        ),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15.0),
+      child: TextFormField(
+        controller: widget.controller,
+        style: const TextStyle(fontSize: logintTextSizeSmall),
+        decoration: inputDecoration(),
+        obscureText: obscureText(),
+        maxLength: 40,
       ),
     );
   }
@@ -175,24 +217,90 @@ class RegisterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var buttonStyle = ElevatedButton.styleFrom(
+    ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
       foregroundColor: defaultWhite,
       backgroundColor: productColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10.0),
+        ),
+      ),
     );
 
-    const TextStyle textStyle = TextStyle(
-      fontSize: logintTextSizeSmall,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 2.0,
+    Text buttonText = const Text(
+      "REGISTER",
+      style: TextStyle(
+        fontSize: loginTextSizeBig,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 2.0,
+      ),
     );
 
-    return ElevatedButton(
-      style: buttonStyle,
-      onPressed: register,
-      child: const Text(
-        "REGISTER",
-        style: textStyle,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: buttonStyle,
+              onPressed: register,
+              child: buttonText,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PrivacyPolicy extends StatelessWidget {
+  const PrivacyPolicy({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15.0),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 5.0),
+            child: const Text(
+              "By signing up you agree to Telegraph's",
+              style: TextStyle(color: defaultBlack),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {},
+                child: const Text(
+                  "Privacy Policy",
+                  style: TextStyle(
+                    color: defaultBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 2.0, right: 2.0),
+                child: const Text(
+                  "and",
+                  style: TextStyle(color: defaultBlack),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: const Text(
+                  "Terms of Use.",
+                  style: TextStyle(
+                      color: defaultBlue, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -202,25 +310,44 @@ class RegisterButton extends StatelessWidget {
 class LoginInstead extends StatelessWidget {
   const LoginInstead({super.key});
 
-  TextButton loginInsteadText(BuildContext context) {
-    const TextStyle textStyle = TextStyle(
-        color: defaultBlue, fontWeight: FontWeight.bold, fontSize: 16.0);
+  Text loginInsteadText() {
+    const TextStyle textStyle = TextStyle(color: defaultBlue);
 
-    return TextButton(
-      onPressed: () {
-        Navigator.of(context).pop(true);
-      },
-      child: const Text(
-        "I have an account",
-        style: textStyle,
-      ),
+    return const Text(
+      "Login instead?",
+      style: textStyle,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: loginInsteadText(context),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            "Have an account?",
+            style: TextStyle(
+              color: defaultGrey,
+              fontSize: logintTextSizeSmall,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 5.0),
+            child: GestureDetector(
+              onTap: () {},
+              child: const Text(
+                "Login instead",
+                style: TextStyle(
+                  color: defaultBlue,
+                  fontSize: logintTextSizeSmall,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
