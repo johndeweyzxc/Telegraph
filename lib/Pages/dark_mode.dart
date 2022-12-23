@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegraph/const_var.dart';
 
 class EnableDarkModePage extends StatefulWidget {
   const EnableDarkModePage({super.key});
@@ -10,6 +11,11 @@ class EnableDarkModePage extends StatefulWidget {
 class _EnableDarkModePageState extends State<EnableDarkModePage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: productColor,
+        title: const Text("Enable dark mode1"),
+      ),
+    );
   }
 }

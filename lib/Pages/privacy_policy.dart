@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegraph/const_var.dart';
 
 class PrivacyPolicyPages extends StatelessWidget {
   const PrivacyPolicyPages({super.key});
@@ -7,6 +8,7 @@ class PrivacyPolicyPages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: productColor,
         title: const Text("Privacy Policy"),
       ),
     );

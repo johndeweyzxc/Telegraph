@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegraph/const_var.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -12,6 +13,7 @@ class _MessagesPageState extends State<MessagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: productColor,
         title: const Text("Messages"),
       ),
     );
