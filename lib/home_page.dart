@@ -13,33 +13,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String? name;
-  late String? photoUrl;
   final User? user = AuthInstance().firebaseAuth.currentUser;
 
   AppBar appBar() {
-    if (user?.displayName == null) {
-      setState(() {
-        List<String>? getName = user?.email?.split('@');
-        name = getName?.first;
-      });
-    } else {
-      setState(() {
-        name = user?.displayName;
-      });
-    }
-
-    if (user?.photoURL == null) {
-      setState(() {
-        photoUrl =
-            "https://cdn-images-1.medium.com/max/1200/1*5-aoK8IBmXve5whBQM90GA.png";
-      });
-    } else {
-      setState(() {
-        photoUrl = user?.photoURL;
-      });
-    }
-
     return AppBar(
       backgroundColor: productColor,
       title: Container(
@@ -61,21 +37,25 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: appBar(),
       drawer: NavigationDrawer(
-          photoUrl: photoUrl, userName: user?.email, name: name),
-      body: const Center(child: Text("Hello")),
+          photoUrl: user?.photoURL,
+          email: user?.email,
+          name: user?.displayName),
+      body: const Center(
+        child: Text("Hello"),
+      ),
     );
   }
 }
 
 class NavigationDrawer extends StatelessWidget {
   final String? photoUrl;
-  final String? userName;
+  final String? email;
   final String? name;
 
   const NavigationDrawer({
     super.key,
     required this.photoUrl,
-    required this.userName,
+    required this.email,
     required this.name,
   });
 
@@ -89,7 +69,7 @@ class NavigationDrawer extends StatelessWidget {
           children: <Widget>[
             DrawerHeader(
               photoUrl: photoUrl,
-              userName: userName,
+              email: email,
               name: name,
             ),
             const DrawerItems(),
@@ -102,15 +82,32 @@ class NavigationDrawer extends StatelessWidget {
 
 class DrawerHeader extends StatelessWidget {
   final String? photoUrl;
-  final String? userName;
+  final String? email;
   final String? name;
 
   const DrawerHeader({
     super.key,
     required this.photoUrl,
-    required this.userName,
+    required this.email,
     required this.name,
   });
+
+  String? createName() {
+    if (name == null || name == "") {
+      List<String>? getName = email?.split('@');
+      return getName!.first;
+    } else {
+      return name;
+    }
+  }
+
+  String? defaultPhoto() {
+    if (photoUrl == null) {
+      return ("https://cdn-images-1.medium.com/max/1200/1*5-aoK8IBmXve5whBQM90GA.png");
+    } else {
+      return photoUrl;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,19 +116,24 @@ class DrawerHeader extends StatelessWidget {
       padding: EdgeInsets.only(
         top: 24 + MediaQuery.of(context).padding.top,
         bottom: 10,
+        left: 10,
+        right: 10,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 50,
             backgroundColor: defaultWhite,
-            backgroundImage: NetworkImage(photoUrl!),
+            backgroundImage: NetworkImage(defaultPhoto()!),
           ),
           const SizedBox(
             height: 12,
           ),
-          Text(name!),
-          Text(userName!),
+          Text(
+            createName()!,
+          ),
+          Text(email!),
         ],
       ),
     );
