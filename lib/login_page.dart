@@ -51,7 +51,6 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: widthScreen(context) - 50.0,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Welcome(),
           LoginTextInput(
@@ -72,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           const ForgotPassword(),
           const LoginWith(),
           const ThirdPartyLogin(),
+          const PrivacyPolicy(),
           Expanded(
             child: Container(
               margin: const EdgeInsets.only(bottom: 25.0),
@@ -203,7 +203,7 @@ class _TextInputState extends State<LoginTextInput> {
     final Padding startIcon = Padding(
       padding: const EdgeInsets.all(10.0),
       child: Icon(
-        widget.label == "Password" ? Icons.lock : Icons.person,
+        widget.label == "Password" ? Icons.lock : Icons.mail,
         color: defaultBlack,
       ),
     );
@@ -239,6 +239,9 @@ class LoginButton extends StatelessWidget {
     padding: const EdgeInsets.all(10.0),
     foregroundColor: defaultWhite,
     backgroundColor: productColor,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+    ),
   );
 
   final Text buttonText = const Text(
@@ -333,6 +336,7 @@ class ThirdPartyLogin extends StatelessWidget {
 
   Container google() {
     return Container(
+      margin: const EdgeInsets.only(bottom: 10.0),
       child: Row(
         children: [
           Expanded(
@@ -342,6 +346,13 @@ class ThirdPartyLogin extends StatelessWidget {
                   const EdgeInsets.all(5.0),
                 ),
                 backgroundColor: MaterialStateProperty.all(Colors.white),
+                shape: const MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
+                  ),
+                ),
               ),
               onPressed: () {
                 GoogleAuth().googleLogin();
@@ -364,6 +375,58 @@ class ThirdPartyLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return google();
+  }
+}
+
+class PrivacyPolicy extends StatelessWidget {
+  const PrivacyPolicy({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15.0),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(bottom: 5.0),
+            child: const Text(
+              "By logging in you agree to Telegraph's",
+              style: TextStyle(color: defaultBlack),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {},
+                child: const Text(
+                  "Privacy Policy",
+                  style: TextStyle(
+                    color: defaultBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 2.0, right: 2.0),
+                child: const Text(
+                  "and",
+                  style: TextStyle(color: defaultBlack),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: const Text(
+                  "Terms of Use.",
+                  style: TextStyle(
+                      color: defaultBlue, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
