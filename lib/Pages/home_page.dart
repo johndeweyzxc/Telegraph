@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
+import 'package:telegraph/Pages/about.dart';
+import 'package:telegraph/Pages/dark_mode.dart';
+import 'package:telegraph/Pages/messages.dart';
+import 'package:telegraph/Pages/privacy_policy.dart';
 import 'package:telegraph/const_var.dart';
 
 class HomePage extends StatefulWidget {
@@ -72,7 +76,7 @@ class NavigationDrawer extends StatelessWidget {
               email: email,
               name: name,
             ),
-            const DrawerItems(),
+            DrawerItems(context: context),
           ],
         ),
       ),
@@ -103,7 +107,8 @@ class DrawerHeader extends StatelessWidget {
 
   String? defaultPhoto() {
     if (photoUrl == null) {
-      return ("https://cdn-images-1.medium.com/max/1200/1*5-aoK8IBmXve5whBQM90GA.png");
+      return ("""https://cdn-images-1.medium.com/max
+        /1200/1*5-aoK8IBmXve5whBQM90GA.png""");
     } else {
       return photoUrl;
     }
@@ -154,7 +159,16 @@ class DrawerHeader extends StatelessWidget {
 }
 
 class DrawerItems extends StatelessWidget {
-  const DrawerItems({super.key});
+  final BuildContext context;
+  const DrawerItems({super.key, required this.context});
+
+  Future<dynamic> onTapVal(page) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(builder: (BuildContext context) {
+        return page;
+      }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,14 +187,18 @@ class DrawerItems extends StatelessWidget {
               Icons.home_outlined,
             ),
             title: const Text("Home"),
-            onTap: () {},
+            onTap: () {
+              onTapVal(const HomePage());
+            },
           ),
           ListTile(
             leading: const Icon(
               Icons.message_outlined,
             ),
             title: const Text("Messages"),
-            onTap: () {},
+            onTap: () {
+              onTapVal(const MessagesPage());
+            },
           ),
           const Divider(
             color: defaultBlack,
@@ -188,17 +206,23 @@ class DrawerItems extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text("About"),
-            onTap: () {},
+            onTap: () {
+              onTapVal(const AboutPage());
+            },
           ),
           ListTile(
             leading: const Icon(Icons.policy),
             title: const Text("Privacy Policy"),
-            onTap: () {},
+            onTap: () {
+              onTapVal(const PrivacyPolicyPages());
+            },
           ),
           ListTile(
             leading: const Icon(Icons.gavel),
             title: const Text("Terms of Use"),
-            onTap: () {},
+            onTap: () {
+              onTapVal(const PrivacyPolicyPages());
+            },
           ),
           const Divider(
             color: defaultBlack,
@@ -206,7 +230,9 @@ class DrawerItems extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dark_mode),
             title: const Text("Dark mode"),
-            onTap: () {},
+            onTap: () {
+              onTapVal(const EnableDarkModePage());
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout_outlined),
