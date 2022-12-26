@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:telegraph/const_var.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
 import 'package:telegraph/Pages/about.dart';
-import 'package:telegraph/Pages/home_page.dart';
-import 'package:telegraph/Pages/dark_mode.dart';
 import 'package:telegraph/Pages/messages.dart';
 import 'package:telegraph/Pages/privacy_policy.dart';
+import 'package:telegraph/Pages/bug_report.dart';
+import 'package:telegraph/Pages/dark_mode.dart';
 
 class SideBarItems extends StatelessWidget {
   final BuildContext context;
@@ -32,12 +32,10 @@ class SideBarItems extends StatelessWidget {
             color: defaultGrey,
           ),
           ListTile(
-            leading: const Icon(
-              Icons.home_outlined,
-            ),
-            title: const Text("Home"),
+            leading: const Icon(Icons.info_outline),
+            title: const Text("About"),
             onTap: () {
-              onTapVal(const HomePage());
+              onTapVal(const AboutPage());
             },
           ),
           ListTile(
@@ -53,10 +51,10 @@ class SideBarItems extends StatelessWidget {
             color: defaultBlack,
           ),
           ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text("About"),
+            leading: const Icon(Icons.bug_report_outlined),
+            title: const Text("Bug Report"),
             onTap: () {
-              onTapVal(const AboutPage());
+              onTapVal(const BugReport());
             },
           ),
           ListTile(
