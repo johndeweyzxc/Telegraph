@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegraph/const_var.dart';
 
 class BugReport extends StatefulWidget {
   const BugReport({super.key});
@@ -9,6 +10,7 @@ class BugReport extends StatefulWidget {
 
 class _BugReportState extends State<BugReport> {
   AppBar appBar = AppBar(
+    backgroundColor: productColor,
     title: const Text("Report a bug"),
   );
 

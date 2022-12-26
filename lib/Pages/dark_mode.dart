@@ -14,7 +14,7 @@ class _EnableDarkModePageState extends State<EnableDarkModePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: productColor,
-        title: const Text("Enable dark mode1"),
+        title: const Text("Enable dark mode"),
       ),
     );
   }

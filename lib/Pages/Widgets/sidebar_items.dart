@@ -12,6 +12,7 @@ class SideBarItems extends StatelessWidget {
   const SideBarItems({super.key, required this.context});
 
   Future<dynamic> onTapVal(page) {
+    Navigator.pop(context);
     return Navigator.of(context).push(
       MaterialPageRoute(builder: (BuildContext context) {
         return page;
