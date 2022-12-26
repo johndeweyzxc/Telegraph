@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:telegraph/const_var.dart';
+import 'package:telegraph/Auth/auth_instance.dart';
+import 'package:telegraph/Pages/about.dart';
+import 'package:telegraph/Pages/home_page.dart';
+import 'package:telegraph/Pages/dark_mode.dart';
+import 'package:telegraph/Pages/messages.dart';
+import 'package:telegraph/Pages/privacy_policy.dart';
+
+class SideBarItems extends StatelessWidget {
+  final BuildContext context;
+  const SideBarItems({super.key, required this.context});
+
+  Future<dynamic> onTapVal(page) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(builder: (BuildContext context) {
+        return page;
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: heightScreen(context),
+      color: defaultWhite,
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      child: Wrap(
+        runSpacing: 5,
+        children: [
+          const Divider(
+            color: defaultGrey,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.home_outlined,
+            ),
+            title: const Text("Home"),
+            onTap: () {
+              onTapVal(const HomePage());
+            },
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.message_outlined,
+            ),
+            title: const Text("Messages"),
+            onTap: () {
+              onTapVal(const MessagesPage());
+            },
+          ),
+          const Divider(
+            color: defaultBlack,
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text("About"),
+            onTap: () {
+              onTapVal(const AboutPage());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.policy),
+            title: const Text("Privacy Policy"),
+            onTap: () {
+              onTapVal(const PrivacyPolicyPages());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.gavel),
+            title: const Text("Terms of Use"),
+            onTap: () {
+              onTapVal(const PrivacyPolicyPages());
+            },
+          ),
+          const Divider(
+            color: defaultBlack,
+          ),
+          ListTile(
+            leading: const Icon(Icons.dark_mode),
+            title: const Text("Dark mode"),
+            onTap: () {
+              onTapVal(const EnableDarkModePage());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout_outlined),
+            title: const Text("Logout"),
+            onTap: () {
+              AuthInstance().signOut();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
