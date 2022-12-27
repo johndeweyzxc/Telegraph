@@ -22,12 +22,11 @@ class SideBarHeader extends StatelessWidget {
     }
   }
 
-  String? defaultPhoto() {
+  dynamic profileImage() {
     if (photoUrl == null) {
-      return ("""https://cdn-images-1.medium.com/max
-        /1200/1*5-aoK8IBmXve5whBQM90GA.png""");
+      return const AssetImage("assets/images/flutter-symbol.png");
     } else {
-      return photoUrl;
+      return NetworkImage(photoUrl!);
     }
   }
 
@@ -47,7 +46,7 @@ class SideBarHeader extends StatelessWidget {
           CircleAvatar(
             radius: 50,
             backgroundColor: white,
-            backgroundImage: NetworkImage(defaultPhoto()!),
+            backgroundImage: profileImage(),
           ),
           const SizedBox(
             height: 12,
