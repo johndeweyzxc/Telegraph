@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: productColor,
+        statusBarColor: deepPurple500,
       ),
     );
   }
@@ -104,14 +104,14 @@ class Welcome extends StatelessWidget {
   const Welcome({super.key});
 
   final TextStyle appHeadingStyle = const TextStyle(
-    color: productColor,
+    color: deepPurple500,
     fontSize: 48.0,
     fontWeight: FontWeight.bold,
     letterSpacing: 2.0,
   );
 
   final TextStyle subHeadingStyle = const TextStyle(
-    color: defaultGrey,
+    color: grey500,
     fontSize: 16.0,
     fontStyle: FontStyle.italic,
     letterSpacing: 1.0,
@@ -184,18 +184,18 @@ class _TextInputState extends State<LoginTextInput> {
   }
 
   final TextStyle inputLabelStyle = const TextStyle(
-    color: defaultBlack,
-    fontSize: logintTextSizeSmall,
+    color: black,
+    fontSize: textSmall,
   );
 
   final OutlineInputBorder inputEnabledBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: productColor),
+    borderSide: const BorderSide(color: deepPurple500),
   );
 
   final OutlineInputBorder inputFocusedBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: productColor, width: 2.0),
+    borderSide: const BorderSide(color: deepPurple500, width: 2.0),
   );
 
   @override
@@ -204,7 +204,7 @@ class _TextInputState extends State<LoginTextInput> {
       padding: const EdgeInsets.all(10.0),
       child: Icon(
         widget.label == "Password" ? Icons.lock : Icons.mail,
-        color: defaultBlack,
+        color: black,
       ),
     );
 
@@ -237,8 +237,8 @@ class LoginButton extends StatelessWidget {
 
   final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
     padding: const EdgeInsets.all(10.0),
-    foregroundColor: defaultWhite,
-    backgroundColor: productColor,
+    foregroundColor: white,
+    backgroundColor: deepPurple500,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
     ),
@@ -247,7 +247,7 @@ class LoginButton extends StatelessWidget {
   final Text buttonText = const Text(
     "LOGIN",
     style: TextStyle(
-      fontSize: loginTextSizeBig,
+      fontSize: textbig,
       fontWeight: FontWeight.bold,
       letterSpacing: 2.0,
     ),
@@ -284,7 +284,7 @@ class ForgotPassword extends StatelessWidget {
         child: const Text(
           "Forgot your password?",
           style: TextStyle(
-            color: defaultBlue,
+            color: lightBlue600,
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
           ),
@@ -299,7 +299,7 @@ class LoginWith extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const TextStyle textStyle = TextStyle(color: defaultGrey);
+    const TextStyle textStyle = TextStyle(color: grey500);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15.0),
@@ -309,7 +309,7 @@ class LoginWith extends StatelessWidget {
           const Expanded(
             child: Divider(
               height: 2.0,
-              color: defaultGrey,
+              color: grey500,
             ),
           ),
           Container(
@@ -319,7 +319,7 @@ class LoginWith extends StatelessWidget {
           const Expanded(
             child: Divider(
               height: 10.0,
-              color: defaultGrey,
+              color: grey500,
             ),
           ),
         ],
@@ -363,7 +363,7 @@ class ThirdPartyLogin extends StatelessWidget {
               ),
               label: const Text(
                 "Google",
-                style: TextStyle(color: defaultBlack, fontSize: 16.0),
+                style: TextStyle(color: black, fontSize: 16.0),
               ),
             ),
           ),
@@ -391,7 +391,7 @@ class PrivacyPolicy extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 5.0),
             child: const Text(
               "By logging in you agree to Telegraph's",
-              style: TextStyle(color: defaultBlack),
+              style: TextStyle(color: black),
             ),
           ),
           Row(
@@ -402,7 +402,7 @@ class PrivacyPolicy extends StatelessWidget {
                 child: const Text(
                   "Privacy Policy",
                   style: TextStyle(
-                    color: defaultBlue,
+                    color: lightBlue600,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -411,7 +411,7 @@ class PrivacyPolicy extends StatelessWidget {
                 margin: const EdgeInsets.only(left: 2.0, right: 2.0),
                 child: const Text(
                   "and",
-                  style: TextStyle(color: defaultBlack),
+                  style: TextStyle(color: black),
                 ),
               ),
               GestureDetector(
@@ -419,7 +419,7 @@ class PrivacyPolicy extends StatelessWidget {
                 child: const Text(
                   "Terms of Use.",
                   style: TextStyle(
-                      color: defaultBlue, fontWeight: FontWeight.bold),
+                      color: lightBlue600, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -443,12 +443,12 @@ class RegisterText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const TextStyle localStyle = TextStyle(
-      color: defaultBlack,
+      color: black,
       fontSize: 16.0,
     );
 
     const TextStyle signUpStyle = TextStyle(
-      color: defaultBlue,
+      color: lightBlue600,
       fontWeight: FontWeight.bold,
       fontSize: 16.0,
     );

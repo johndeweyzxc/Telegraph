@@ -10,7 +10,7 @@ class BugReport extends StatefulWidget {
 
 class _BugReportState extends State<BugReport> {
   AppBar appBar = AppBar(
-    backgroundColor: productColor,
+    backgroundColor: deepPurple500,
     title: const Text("Report a bug"),
   );
 

@@ -24,13 +24,13 @@ class SideBarItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: heightScreen(context),
-      color: defaultWhite,
+      color: white,
       padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       child: Wrap(
         runSpacing: 5,
         children: [
           const Divider(
-            color: defaultGrey,
+            color: grey500,
           ),
           ListTile(
             leading: const Icon(Icons.info_outline),
@@ -49,7 +49,7 @@ class SideBarItems extends StatelessWidget {
             },
           ),
           const Divider(
-            color: defaultBlack,
+            color: black,
           ),
           ListTile(
             leading: const Icon(Icons.bug_report_outlined),
@@ -73,7 +73,7 @@ class SideBarItems extends StatelessWidget {
             },
           ),
           const Divider(
-            color: defaultBlack,
+            color: black,
           ),
           ListTile(
             leading: const Icon(Icons.dark_mode),

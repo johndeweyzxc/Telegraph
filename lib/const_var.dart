@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-const productColor = Color.fromARGB(255, 99, 43, 255);
-const defaultGrey = Color.fromARGB(167, 129, 129, 129);
-const defaultWhite = Color.fromARGB(255, 255, 255, 255);
-const defaultBlack = Color.fromARGB(146, 0, 0, 0);
-const defaultBlue = Colors.blue;
+// Material color tool https://m2.material.io/resources/color
+const deepPurple500 = Color(0xff673ab7);
+const grey500 = Color(0xff9e9e9e);
+const white = Color(0xffffffff);
+const black = Color(0xff000000);
+const lightBlue600 = Color(0xff039be5);
 
-// Login page constants
-const double loginTextSizeBig = 20.0;
-const double logintTextSizeSmall = 16.0;
-const loginDefaultPadding = EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0);
-const loginSecondaryPadding = EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0.0);
+const double textbig = 20.0;
+const double textSmall = 16.0;
 
+// Width of the client screen
 double widthScreen(context) {
   return MediaQuery.of(context).size.width;
 }
 
+// Height of the client screen
 double heightScreen(context) {
   return MediaQuery.of(context).size.height;
 }

@@ -34,7 +34,7 @@ class SideBarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: defaultWhite,
+      color: white,
       padding: EdgeInsets.only(
         top: 35 + MediaQuery.of(context).padding.top,
         bottom: 10,
@@ -46,7 +46,7 @@ class SideBarHeader extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 50,
-            backgroundColor: defaultWhite,
+            backgroundColor: white,
             backgroundImage: NetworkImage(defaultPhoto()!),
           ),
           const SizedBox(
@@ -58,15 +58,15 @@ class SideBarHeader extends StatelessWidget {
               createName()!,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: loginTextSizeBig,
+                fontSize: textbig,
               ),
             ),
           ),
           Text(
             email!,
             style: const TextStyle(
-              color: defaultGrey,
-              fontSize: logintTextSizeSmall,
+              color: grey500,
+              fontSize: textSmall,
             ),
           ),
         ],

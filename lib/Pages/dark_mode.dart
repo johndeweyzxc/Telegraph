@@ -13,7 +13,7 @@ class _EnableDarkModePageState extends State<EnableDarkModePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: productColor,
+        backgroundColor: deepPurple500,
         title: const Text("Enable dark mode"),
       ),
     );

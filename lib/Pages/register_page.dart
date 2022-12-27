@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   AppBar appBar() {
     return AppBar(
-      backgroundColor: productColor,
+      backgroundColor: deepPurple500,
       title: const Text("Create an account"),
     );
   }
@@ -130,7 +130,7 @@ class RegisterInput extends StatefulWidget {
 class _RegisterInputState extends State<RegisterInput> {
   bool showPassword = false;
   OutlineInputBorder outline = const OutlineInputBorder(
-    borderSide: BorderSide(color: productColor),
+    borderSide: BorderSide(color: deepPurple500),
   );
 
   // Returns an icon 'visibility' if the input type is password,
@@ -165,12 +165,12 @@ class _RegisterInputState extends State<RegisterInput> {
 
   final OutlineInputBorder inputEnabledBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: productColor),
+    borderSide: const BorderSide(color: deepPurple500),
   );
 
   final OutlineInputBorder inputFocusedBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: productColor, width: 2.0),
+    borderSide: const BorderSide(color: deepPurple500, width: 2.0),
   );
 
   InputDecoration inputDecoration() {
@@ -178,14 +178,14 @@ class _RegisterInputState extends State<RegisterInput> {
       padding: const EdgeInsets.all(10.0),
       child: Icon(
         widget.label == "Password" ? Icons.lock : Icons.mail,
-        color: defaultBlack,
+        color: black,
       ),
     );
 
     return InputDecoration(
       contentPadding: const EdgeInsets.all(10.0),
       labelText: widget.label,
-      labelStyle: const TextStyle(color: defaultBlack),
+      labelStyle: const TextStyle(color: black),
       border: const OutlineInputBorder(),
       enabledBorder: inputEnabledBorder,
       focusedBorder: inputFocusedBorder,
@@ -200,7 +200,7 @@ class _RegisterInputState extends State<RegisterInput> {
       margin: const EdgeInsets.only(bottom: 15.0),
       child: TextFormField(
         controller: widget.controller,
-        style: const TextStyle(fontSize: logintTextSizeSmall),
+        style: const TextStyle(fontSize: textSmall),
         decoration: inputDecoration(),
         obscureText: obscureText(),
         maxLength: 40,
@@ -219,8 +219,8 @@ class RegisterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
-      foregroundColor: defaultWhite,
-      backgroundColor: productColor,
+      foregroundColor: white,
+      backgroundColor: deepPurple500,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(10.0),
@@ -231,7 +231,7 @@ class RegisterButton extends StatelessWidget {
     Text buttonText = const Text(
       "REGISTER",
       style: TextStyle(
-        fontSize: loginTextSizeBig,
+        fontSize: textbig,
         fontWeight: FontWeight.bold,
         letterSpacing: 2.0,
       ),
@@ -267,7 +267,7 @@ class PrivacyPolicy extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 5.0),
             child: const Text(
               "By signing up you agree to Telegraph's",
-              style: TextStyle(color: defaultBlack),
+              style: TextStyle(color: black),
             ),
           ),
           Row(
@@ -278,7 +278,7 @@ class PrivacyPolicy extends StatelessWidget {
                 child: const Text(
                   "Privacy Policy",
                   style: TextStyle(
-                    color: defaultBlue,
+                    color: lightBlue600,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -287,7 +287,7 @@ class PrivacyPolicy extends StatelessWidget {
                 margin: const EdgeInsets.only(left: 2.0, right: 2.0),
                 child: const Text(
                   "and",
-                  style: TextStyle(color: defaultBlack),
+                  style: TextStyle(color: black),
                 ),
               ),
               GestureDetector(
@@ -295,7 +295,7 @@ class PrivacyPolicy extends StatelessWidget {
                 child: const Text(
                   "Terms of Use.",
                   style: TextStyle(
-                      color: defaultBlue, fontWeight: FontWeight.bold),
+                      color: lightBlue600, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -311,7 +311,7 @@ class LoginInstead extends StatelessWidget {
   const LoginInstead({super.key});
 
   Text loginInsteadText() {
-    const TextStyle textStyle = TextStyle(color: defaultBlue);
+    const TextStyle textStyle = TextStyle(color: lightBlue600);
 
     return const Text(
       "Login instead?",
@@ -328,8 +328,8 @@ class LoginInstead extends StatelessWidget {
           const Text(
             "Have an account?",
             style: TextStyle(
-              color: defaultGrey,
-              fontSize: logintTextSizeSmall,
+              color: grey500,
+              fontSize: textSmall,
             ),
           ),
           Container(
@@ -339,8 +339,8 @@ class LoginInstead extends StatelessWidget {
               child: const Text(
                 "Login instead",
                 style: TextStyle(
-                  color: defaultBlue,
-                  fontSize: logintTextSizeSmall,
+                  color: lightBlue600,
+                  fontSize: textSmall,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -18,7 +18,7 @@ class _MessagesPageState extends State<MessagesPage> {
 
   AppBar appBar() {
     return AppBar(
-      backgroundColor: productColor,
+      backgroundColor: deepPurple500,
       title: Container(
         width: widthScreen(context),
         child: Row(
@@ -198,7 +198,7 @@ class IndividualMessage extends StatelessWidget {
       child: Text(
         name,
         style: const TextStyle(
-          color: defaultGrey,
+          color: grey500,
         ),
       ),
     );
@@ -207,18 +207,18 @@ class IndividualMessage extends StatelessWidget {
   Container textMessage(String message, bool selfMessage) {
     BoxDecoration messageBoxDecor = BoxDecoration(
       border: Border.all(
-        color: selfMessage ? defaultBlue : defaultGrey,
+        color: selfMessage ? lightBlue600 : grey500,
         width: 1.0,
       ),
       borderRadius: const BorderRadius.all(
         Radius.circular(55.0),
       ),
-      color: selfMessage ? defaultBlue : defaultWhite,
+      color: selfMessage ? lightBlue600 : white,
     );
 
     TextStyle inputTextStyle = TextStyle(
-      color: selfMessage ? defaultWhite : defaultBlack,
-      fontSize: logintTextSizeSmall,
+      color: selfMessage ? white : black,
+      fontSize: textSmall,
     );
 
     return Container(
@@ -293,12 +293,12 @@ class _MessageInputState extends State<MessageInput> {
     Expanded textField() {
       OutlineInputBorder focusBorder = OutlineInputBorder(
         borderRadius: BorderRadius.circular(50.0),
-        borderSide: const BorderSide(color: productColor, width: 2.0),
+        borderSide: const BorderSide(color: deepPurple500, width: 2.0),
       );
 
       OutlineInputBorder enableBorder = OutlineInputBorder(
         borderRadius: BorderRadius.circular(50.0),
-        borderSide: const BorderSide(color: productColor, width: 2.0),
+        borderSide: const BorderSide(color: deepPurple500, width: 2.0),
       );
 
       EdgeInsets paddingX = const EdgeInsets.only(
