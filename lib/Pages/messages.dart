@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
 import 'package:telegraph/Models/message_model.dart';
-import 'package:telegraph/Pages/Widgets/sidebar_menu.dart';
+import 'package:telegraph/Widgets/sidebar_menu.dart';
 import 'package:telegraph/const_var.dart';
 import 'package:telegraph/Controller/controller.dart';
 

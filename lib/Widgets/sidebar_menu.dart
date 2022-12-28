@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telegraph/const_var.dart';
-import 'package:telegraph/Pages/Widgets/sidebar_header.dart';
-import 'package:telegraph/Pages/Widgets/sidebar_items.dart';
+import 'package:telegraph/Widgets/sidebar_header.dart';
+import 'package:telegraph/Widgets/sidebar_items.dart';
 
 class SideBarMenu extends StatelessWidget {
   final String? photoUrl;
