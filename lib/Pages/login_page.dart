@@ -2,11 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:telegraph/Auth/sign_in_google.dart';
-import 'package:telegraph/Auth/sign_in_email.dart';
 import 'package:telegraph/Pages/register_page.dart';
+import 'package:telegraph/Controller/user_controller.dart';
 import 'package:telegraph/const_var.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,21 +18,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  String? errorMessage = '';
-
-  // Communicate with the firebase to authenticate user
-  Future<void> signInWithEmailAndPassword() async {
-    try {
-      await EmailAuth().signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = e.message;
-      });
-    }
-
-    debugPrint(errorMessage);
-  }
 
   // AppBar
   AppBar appBar() {
@@ -65,7 +49,14 @@ class _LoginPageState extends State<LoginPage> {
           ),
           LoginButton(
             signIn: () async {
-              await signInWithEmailAndPassword();
+              String? authenticate = await UserController().signInEmailPassword(
+                emailController.text,
+                passwordController.text,
+              );
+
+              if (authenticate != 'Success') {
+                // Debug print
+              }
             },
           ),
           const ForgotPassword(),

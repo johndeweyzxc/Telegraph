@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/const_var.dart';
 import 'package:telegraph/Auth/sign_in_email.dart';
+import 'package:telegraph/Controller/user_controller.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,27 +18,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmController = TextEditingController();
   bool showPassword = false;
-  String? errorMessage = '';
-
-  // Communicate with the firebase to create a new user
-  Future<void> createUserWithEmailAndPassword() async {
-    // Password and confirm password did not match
-    if (passwordController.text != confirmController.text) {
-      debugPrint("Password does not match!");
-      return;
-    }
-
-    try {
-      await EmailAuth().createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = e.message;
-      });
-    }
-
-    debugPrint(errorMessage);
-  }
 
   AppBar appBar() {
     return AppBar(
@@ -75,7 +55,21 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 RegisterButton(
                   register: () async {
-                    await createUserWithEmailAndPassword();
+                    // Password and confirm password did not match
+                    if (passwordController.text != confirmController.text) {
+                      // Debug print
+                      return;
+                    }
+
+                    String? signUp = await UserController().signUpEmailPassword(
+                      emailController.text,
+                      passwordController.text,
+                    );
+
+                    if (signUp != 'Success') {
+                      // Debug print
+                      // An error occurs
+                    }
                   },
                 ),
                 const PrivacyPolicy(),

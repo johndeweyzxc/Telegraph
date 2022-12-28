@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:telegraph/Models/message_model.dart';
 
-class Controller {
+class MessageController {
+  // Create a new document message
   Future createMessage(String? uname, String? uemail, String? uid, String msg,
       String photoUrl, Timestamp timeStamp) async {
     // Reference to the document
@@ -22,6 +23,7 @@ class Controller {
     await docMsg.set(messageJson);
   }
 
+  // Retrieve all the message from the database
   Stream<List<MessageModel>> messageStream() {
     // Converts json data to message model object
     MessageModel modelObject(doc) {

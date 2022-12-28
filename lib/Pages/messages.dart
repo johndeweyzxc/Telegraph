@@ -7,7 +7,7 @@ import 'package:telegraph/Auth/auth_instance.dart';
 import 'package:telegraph/Models/message_model.dart';
 import 'package:telegraph/Widgets/sidebar_menu.dart';
 import 'package:telegraph/const_var.dart';
-import 'package:telegraph/Controller/controller.dart';
+import 'package:telegraph/Controller/message_controller.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -92,7 +92,7 @@ class _MessageViewState extends State<MessageView> {
 
   StreamBuilder messageContent() {
     return StreamBuilder<List<MessageModel>>(
-      stream: Controller().messageStream(),
+      stream: MessageController().messageStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           debugPrint("Oops! Something went wrong");
@@ -262,7 +262,7 @@ class _MessageInputState extends State<MessageInput> {
 
       return IconButton(
         onPressed: () {
-          Controller().createMessage(
+          MessageController().createMessage(
             createName(),
             currentUser?.email,
             currentUser?.uid,
