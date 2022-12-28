@@ -19,18 +19,15 @@ class SideBarMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: widthScreen(context) - 80.0,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SideBarHeader(
-              photoUrl: photoUrl,
-              email: email,
-              name: name,
-            ),
-            SideBarItems(context: context),
-          ],
-        ),
+      child: ListView(
+        children: <Widget>[
+          SideBarHeader(
+            photoUrl: photoUrl,
+            email: email,
+            name: name,
+          ),
+          SideBarItems(context: context),
+        ],
       ),
     );
   }
