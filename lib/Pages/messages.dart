@@ -1,10 +1,13 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_unnecessary_containers
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
+import 'package:telegraph/Models/message_model.dart';
 import 'package:telegraph/Pages/Widgets/sidebar_menu.dart';
 import 'package:telegraph/const_var.dart';
+import 'package:telegraph/Controller/controller.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -36,11 +39,13 @@ class _MessagesPageState extends State<MessagesPage> {
   Container appBody() {
     return Container(
       child: Column(
-        children: const [
+        children: [
           Expanded(
-            child: MessageView(),
+            child: MessageView(user: user!),
           ),
-          MessageInput(),
+          MessageInput(
+            currentUser: user,
+          ),
         ],
       ),
     );
@@ -62,105 +67,43 @@ class _MessagesPageState extends State<MessagesPage> {
 }
 
 class MessageView extends StatefulWidget {
-  const MessageView({super.key});
+  final User user;
+  const MessageView({super.key, required this.user});
 
   @override
   State<MessageView> createState() => _MessageViewState();
 }
 
 class _MessageViewState extends State<MessageView> {
-  List<Map<dynamic, dynamic>> messageList = List.from([
-    {
-      'name': 'johndewey02003',
-      'message':
-          'Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy',
-      'selfmessage': true,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': true,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': true,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': true,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-    {
-      'name': 'johndewey02003',
-      'message': 'Lorem Ipsum is simply dummy',
-      'selfmessage': false,
-    },
-  ]);
+  ListView listBuilder(List<MessageModel> messageData) {
+    return ListView.builder(
+      itemCount: messageData.length,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (BuildContext context, int index) {
+        MessageModel messageModel = messageData[index];
 
-  IndividualMessage viewMessage(String name, String message, bool selfMessage) {
-    return IndividualMessage(
-      name: name,
-      message: message,
-      selfMessage: selfMessage,
+        return IndividualMessage(
+          messageModel: messageModel,
+          currentUser: widget.user,
+        );
+      },
     );
   }
 
-  ListView messageCreate() {
-    return ListView.builder(
-      itemCount: messageList.length,
-      scrollDirection: Axis.vertical,
-      itemBuilder: (BuildContext context, int index) {
-        String name = messageList[index]['name'];
-        String message = messageList[index]['message'];
-        bool selfMessage = messageList[index]['selfmessage'];
+  StreamBuilder messageContent() {
+    return StreamBuilder<List<MessageModel>>(
+      stream: Controller().messageStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          debugPrint("Oops! Something went wrong");
+        } else if (snapshot.hasData) {
+          final message = snapshot.data!;
+          return listBuilder(message);
+        }
 
-        return viewMessage(name, message, selfMessage);
+        return const Center(
+          child: CircularProgressIndicator.adaptive(),
+        );
       },
     );
   }
@@ -168,35 +111,42 @@ class _MessageViewState extends State<MessageView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: messageCreate(),
+      child: messageContent(),
     );
   }
 }
 
 class IndividualMessage extends StatelessWidget {
-  final String name;
-  final String message;
-  final bool selfMessage;
+  final MessageModel messageModel;
+  final User currentUser;
 
-  const IndividualMessage({
-    super.key,
-    required this.name,
-    required this.message,
-    required this.selfMessage,
-  });
+  const IndividualMessage(
+      {super.key, required this.messageModel, required this.currentUser});
+
+  dynamic profileImage() {
+    String localPhoto = 'assets/images/flutter-symbol.png';
+
+    if (messageModel.photoUrl == 'No profile photo') {
+      return AssetImage(localPhoto);
+    } else {
+      return NetworkImage(messageModel.photoUrl);
+    }
+  }
 
   Container avatar() {
     return Container(
       margin: const EdgeInsets.only(right: 5.0, left: 5.0),
-      child: const CircleAvatar(),
+      child: CircleAvatar(
+        backgroundImage: profileImage(),
+      ),
     );
   }
 
-  Container textName(String name) {
+  Container textName(String? name) {
     return Container(
       margin: const EdgeInsets.only(bottom: 2.0, left: 5.0, right: 5.0),
       child: Text(
-        name,
+        name!,
         style: const TextStyle(
           color: grey500,
         ),
@@ -231,7 +181,7 @@ class IndividualMessage extends StatelessWidget {
     );
   }
 
-  Expanded messageInfo(String name, String message, bool selfMessage) {
+  Expanded messageInfo(String? name, String message, bool selfMessage) {
     return Expanded(
       child: Column(
         crossAxisAlignment:
@@ -247,10 +197,16 @@ class IndividualMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Row content() {
-      if (selfMessage) {
+      bool isSelfMessage = currentUser.uid == messageModel.uid;
+
+      if (isSelfMessage) {
         return Row(
           children: [
-            messageInfo(name, message, selfMessage),
+            messageInfo(
+              messageModel.uname,
+              messageModel.msg,
+              isSelfMessage,
+            ),
             avatar(),
           ],
         );
@@ -258,7 +214,11 @@ class IndividualMessage extends StatelessWidget {
         return Row(
           children: [
             avatar(),
-            messageInfo(name, message, selfMessage),
+            messageInfo(
+              messageModel.uname,
+              messageModel.msg,
+              isSelfMessage,
+            ),
           ],
         );
       }
@@ -272,21 +232,46 @@ class IndividualMessage extends StatelessWidget {
 }
 
 class MessageInput extends StatefulWidget {
-  const MessageInput({super.key});
+  final User? currentUser;
+
+  const MessageInput({super.key, required this.currentUser});
 
   @override
   State<MessageInput> createState() => _MessageInputState();
 }
 
 class _MessageInputState extends State<MessageInput> {
+  String? createName() {
+    User? currentUser = widget.currentUser;
+    if (currentUser?.displayName == null || currentUser?.displayName == "") {
+      List<String>? getName = currentUser?.email?.split('@');
+      return getName!.first;
+    } else {
+      return currentUser?.displayName;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController inputController = TextEditingController();
 
-    Container sendButton() {
-      return Container(
-        margin: const EdgeInsets.all(10.0),
-        child: const Icon(Icons.send_outlined),
+    IconButton sendButton() {
+      Timestamp currentTime = Timestamp.now();
+      User? currentUser = widget.currentUser;
+      dynamic photoUrl = currentUser?.photoURL ?? 'No profile photo';
+
+      return IconButton(
+        onPressed: () {
+          Controller().createMessage(
+            createName(),
+            currentUser?.email,
+            currentUser?.uid,
+            inputController.text,
+            photoUrl,
+            currentTime,
+          );
+        },
+        icon: const Icon(Icons.send_outlined),
       );
     }
 
