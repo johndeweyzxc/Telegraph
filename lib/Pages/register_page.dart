@@ -24,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
         title: const Text("Create an account"),
       ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           width: widthScreen(context) - 50.0,
           child: pageBody(),
         ),
@@ -171,9 +171,33 @@ class _RegisterInputState extends State<RegisterInput> {
     );
   }
 
-  OutlineInputBorder outline = const OutlineInputBorder(
-    borderSide: BorderSide(color: deepPurple500),
-  );
+  InputDecoration inputDecoration() {
+    Padding startIcon = Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Icon(
+        widget.label == "Password" ? Icons.lock : Icons.mail,
+        color: black,
+      ),
+    );
+
+    return InputDecoration(
+      contentPadding: const EdgeInsets.all(10.0),
+      labelText: widget.label,
+      labelStyle: const TextStyle(color: black),
+      border: const OutlineInputBorder(),
+      enabledBorder: focusAndEnableBorder(1.0),
+      focusedBorder: focusAndEnableBorder(2.0),
+      suffixIcon: isPassword(),
+      prefixIcon: startIcon,
+    );
+  }
+
+  OutlineInputBorder focusAndEnableBorder(double width) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: BorderSide(color: deepPurple500, width: width),
+    );
+  }
 
   IconButton isPassword() {
     // Input type is password
@@ -204,37 +228,6 @@ class _RegisterInputState extends State<RegisterInput> {
     } else {
       return false;
     }
-  }
-
-  final OutlineInputBorder inputEnabledBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: deepPurple500),
-  );
-
-  final OutlineInputBorder inputFocusedBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10.0),
-    borderSide: const BorderSide(color: deepPurple500, width: 2.0),
-  );
-
-  InputDecoration inputDecoration() {
-    Padding startIcon = Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Icon(
-        widget.label == "Password" ? Icons.lock : Icons.mail,
-        color: black,
-      ),
-    );
-
-    return InputDecoration(
-      contentPadding: const EdgeInsets.all(10.0),
-      labelText: widget.label,
-      labelStyle: const TextStyle(color: black),
-      border: const OutlineInputBorder(),
-      enabledBorder: inputEnabledBorder,
-      focusedBorder: inputFocusedBorder,
-      suffixIcon: isPassword(),
-      prefixIcon: startIcon,
-    );
   }
 }
 
