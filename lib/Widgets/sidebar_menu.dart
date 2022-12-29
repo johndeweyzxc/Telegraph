@@ -26,18 +26,27 @@ class SideBarMenu extends StatelessWidget {
     double mobileMenu = .80 * MediaQuery.of(context).size.width;
     // Get 30% of the total width of screen
     double tabletMenu = .30 * MediaQuery.of(context).size.width;
-    return SizedBox(
-      width: useMobileLayout ? mobileMenu : tabletMenu,
-      child: ListView(
-        children: <Widget>[
-          SideBarHeader(
-            photoUrl: photoUrl,
-            email: email,
-            name: name,
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        bool isPortrait = orientation == Orientation.portrait;
+        return SizedBox(
+          width: useMobileLayout ? mobileMenu : tabletMenu,
+          child: ListView(
+            children: <Widget>[
+              SideBarHeader(
+                photoUrl: photoUrl,
+                email: email,
+                name: name,
+              ),
+              SideBarItems(
+                context: context,
+                isPortrait: isPortrait,
+                mobileLayout: useMobileLayout,
+              ),
+            ],
           ),
-          SideBarItems(context: context),
-        ],
-      ),
+        );
+      },
     );
   }
 }

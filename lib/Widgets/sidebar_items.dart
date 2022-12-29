@@ -9,12 +9,38 @@ import 'package:telegraph/Pages/dark_mode.dart';
 
 class SideBarItems extends StatelessWidget {
   final BuildContext context;
-  const SideBarItems({super.key, required this.context});
+  final bool isPortrait;
+  final bool mobileLayout;
+
+  const SideBarItems({
+    super.key,
+    required this.context,
+    required this.isPortrait,
+    required this.mobileLayout,
+  });
 
   @override
   Widget build(BuildContext context) {
+    double? fullHeight;
+
+    // Device orientation is in portrait
+    if (isPortrait) {
+      // Using mobile or tablet
+      if (mobileLayout || !mobileLayout) {
+        fullHeight = heightScreen(context);
+      }
+    }
+    // Device orientation is in landscape
+    else {
+      if (mobileLayout) {
+        fullHeight = null;
+      } else {
+        fullHeight = heightScreen(context);
+      }
+    }
+
     return Container(
-      height: heightScreen(context),
+      height: fullHeight,
       color: white,
       padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       child: Column(
