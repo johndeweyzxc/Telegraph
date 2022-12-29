@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages, avoid_unnecessary_containers
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,38 +17,6 @@ class MessagesPage extends StatefulWidget {
 class _MessagesPageState extends State<MessagesPage> {
   final User? user = AuthInstance().firebaseAuth.currentUser;
 
-  AppBar appBar() {
-    return AppBar(
-      backgroundColor: deepPurple500,
-      title: Container(
-        width: widthScreen(context),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
-            Text(
-              "Messages",
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Container appBody() {
-    return Container(
-      child: Column(
-        children: [
-          Expanded(
-            child: MessageView(user: user!),
-          ),
-          MessageInput(
-            currentUser: user,
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +30,36 @@ class _MessagesPageState extends State<MessagesPage> {
       ),
     );
   }
+
+  AppBar appBar() {
+    return AppBar(
+      backgroundColor: deepPurple500,
+      title: SizedBox(
+        width: widthScreen(context),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: const [
+            Text(
+              "Messages",
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Column appBody() {
+    return Column(
+      children: [
+        Expanded(
+          child: MessageView(user: user!),
+        ),
+        MessageInput(
+          currentUser: user,
+        ),
+      ],
+    );
+  }
 }
 
 class MessageView extends StatefulWidget {
@@ -75,22 +71,8 @@ class MessageView extends StatefulWidget {
 }
 
 class _MessageViewState extends State<MessageView> {
-  ListView listBuilder(List<MessageModel> messageData) {
-    return ListView.builder(
-      itemCount: messageData.length,
-      scrollDirection: Axis.vertical,
-      itemBuilder: (BuildContext context, int index) {
-        MessageModel messageModel = messageData[index];
-
-        return IndividualMessage(
-          messageModel: messageModel,
-          currentUser: widget.user,
-        );
-      },
-    );
-  }
-
-  StreamBuilder messageContent() {
+  @override
+  Widget build(BuildContext context) {
     return StreamBuilder<List<MessageModel>>(
       stream: MessageController().messageStream(),
       builder: (context, snapshot) {
@@ -108,10 +90,18 @@ class _MessageViewState extends State<MessageView> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: messageContent(),
+  ListView listBuilder(List<MessageModel> messageData) {
+    return ListView.builder(
+      itemCount: messageData.length,
+      scrollDirection: Axis.vertical,
+      itemBuilder: (BuildContext context, int index) {
+        MessageModel messageModel = messageData[index];
+
+        return IndividualMessage(
+          messageModel: messageModel,
+          currentUser: widget.user,
+        );
+      },
     );
   }
 }
@@ -120,8 +110,47 @@ class IndividualMessage extends StatelessWidget {
   final MessageModel messageModel;
   final User currentUser;
 
-  const IndividualMessage(
-      {super.key, required this.messageModel, required this.currentUser});
+  const IndividualMessage({
+    super.key,
+    required this.messageModel,
+    required this.currentUser,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Row content() {
+      bool isSelfMessage = currentUser.uid == messageModel.uid;
+
+      if (isSelfMessage) {
+        return Row(
+          children: [
+            messageInfo(
+              messageModel.uname,
+              messageModel.msg,
+              isSelfMessage,
+            ),
+            avatar(),
+          ],
+        );
+      } else {
+        return Row(
+          children: [
+            avatar(),
+            messageInfo(
+              messageModel.uname,
+              messageModel.msg,
+              isSelfMessage,
+            ),
+          ],
+        );
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      child: content(),
+    );
+  }
 
   dynamic profileImage() {
     String localPhoto = 'assets/images/flutter-symbol.png';
@@ -193,42 +222,6 @@ class IndividualMessage extends StatelessWidget {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    Row content() {
-      bool isSelfMessage = currentUser.uid == messageModel.uid;
-
-      if (isSelfMessage) {
-        return Row(
-          children: [
-            messageInfo(
-              messageModel.uname,
-              messageModel.msg,
-              isSelfMessage,
-            ),
-            avatar(),
-          ],
-        );
-      } else {
-        return Row(
-          children: [
-            avatar(),
-            messageInfo(
-              messageModel.uname,
-              messageModel.msg,
-              isSelfMessage,
-            ),
-          ],
-        );
-      }
-    }
-
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      child: content(),
-    );
-  }
 }
 
 class MessageInput extends StatefulWidget {
@@ -241,70 +234,10 @@ class MessageInput extends StatefulWidget {
 }
 
 class _MessageInputState extends State<MessageInput> {
-  String? createName() {
-    User? currentUser = widget.currentUser;
-    if (currentUser?.displayName == null || currentUser?.displayName == "") {
-      List<String>? getName = currentUser?.email?.split('@');
-      return getName!.first;
-    } else {
-      return currentUser?.displayName;
-    }
-  }
+  final TextEditingController inputController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController inputController = TextEditingController();
-
-    IconButton sendButton() {
-      Timestamp currentTime = Timestamp.now();
-      User? currentUser = widget.currentUser;
-      dynamic photoUrl = currentUser?.photoURL ?? 'No profile photo';
-
-      return IconButton(
-        onPressed: () {
-          MessageController().createMessage(
-            createName(),
-            currentUser?.email,
-            currentUser?.uid,
-            inputController.text,
-            photoUrl,
-            currentTime,
-          );
-        },
-        icon: const Icon(Icons.send_outlined),
-      );
-    }
-
-    Expanded textField() {
-      OutlineInputBorder focusBorder = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: const BorderSide(color: deepPurple500, width: 2.0),
-      );
-
-      OutlineInputBorder enableBorder = OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50.0),
-        borderSide: const BorderSide(color: deepPurple500, width: 2.0),
-      );
-
-      EdgeInsets paddingX = const EdgeInsets.only(
-        left: 10.0,
-        right: 10.0,
-      );
-
-      return Expanded(
-        child: TextField(
-          textAlignVertical: TextAlignVertical.top,
-          controller: inputController,
-          decoration: InputDecoration(
-            focusedBorder: focusBorder,
-            enabledBorder: enableBorder,
-            contentPadding: paddingX,
-            hintText: "Send a message",
-          ),
-        ),
-      );
-    }
-
     return Container(
       margin: const EdgeInsets.all(15.0),
       width: widthScreen(context),
@@ -315,5 +248,55 @@ class _MessageInputState extends State<MessageInput> {
         ],
       ),
     );
+  }
+
+  IconButton sendButton() {
+    Timestamp currentTime = Timestamp.now();
+    User? currentUser = widget.currentUser;
+    dynamic photoUrl = currentUser?.photoURL ?? 'No profile photo';
+
+    return IconButton(
+      onPressed: () {
+        MessageController().createMessage(
+          createName(),
+          currentUser?.email,
+          currentUser?.uid,
+          inputController.text,
+          photoUrl,
+          currentTime,
+        );
+      },
+      icon: const Icon(Icons.send_outlined),
+    );
+  }
+
+  Expanded textField() {
+    OutlineInputBorder focusAndEnable = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(50.0),
+      borderSide: const BorderSide(color: deepPurple500, width: 2.0),
+    );
+
+    return Expanded(
+      child: TextField(
+        textAlignVertical: TextAlignVertical.top,
+        controller: inputController,
+        decoration: InputDecoration(
+          focusedBorder: focusAndEnable,
+          enabledBorder: focusAndEnable,
+          contentPadding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          hintText: "Send a message",
+        ),
+      ),
+    );
+  }
+
+  String? createName() {
+    User? currentUser = widget.currentUser;
+    if (currentUser?.displayName == null || currentUser?.displayName == "") {
+      List<String>? getName = currentUser?.email?.split('@');
+      return getName!.first;
+    } else {
+      return currentUser?.displayName;
+    }
   }
 }
