@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:telegraph/const_var.dart';
 import 'package:telegraph/Widgets/sidebar_header.dart';
 import 'package:telegraph/Widgets/sidebar_items.dart';
 
@@ -17,8 +16,18 @@ class SideBarMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widthScreen(context) - 80.0,
+    // The equivalent of the "smallestWidth" qualifier on Android.
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+
+    // Determine if we should use mobile layout or not, 600 here is
+    // a common breakpoint for a typical 7-inch tablet.
+    final bool useMobileLayout = shortestSide < 600;
+    // Get 80% of the total width of screen
+    double mobileMenu = .80 * MediaQuery.of(context).size.width;
+    // Get 30% of the total width of screen
+    double tabletMenu = .30 * MediaQuery.of(context).size.width;
+    return SizedBox(
+      width: useMobileLayout ? mobileMenu : tabletMenu,
       child: ListView(
         children: <Widget>[
           SideBarHeader(

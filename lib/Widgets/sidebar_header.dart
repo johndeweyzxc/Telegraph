@@ -13,6 +13,27 @@ class SideBarHeader extends StatelessWidget {
     required this.name,
   });
 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: white,
+      padding: EdgeInsets.only(
+        top: 35 + MediaQuery.of(context).padding.top,
+        bottom: 10,
+        left: 20,
+        right: 20,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          userAvatar(),
+          userName(),
+          userEmail(),
+        ],
+      ),
+    );
+  }
+
   String? createName() {
     if (name == null || name == "") {
       List<String>? getName = email?.split('@');
@@ -30,45 +51,36 @@ class SideBarHeader extends StatelessWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Container userAvatar() {
     return Container(
-      color: white,
-      padding: EdgeInsets.only(
-        top: 35 + MediaQuery.of(context).padding.top,
-        bottom: 10,
-        left: 20,
-        right: 20,
+      margin: const EdgeInsets.only(bottom: 10.0),
+      child: CircleAvatar(
+        radius: 50,
+        backgroundColor: white,
+        backgroundImage: profileImage(),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: white,
-            backgroundImage: profileImage(),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 5.0),
-            child: Text(
-              createName()!,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: textbig,
-              ),
-            ),
-          ),
-          Text(
-            email!,
-            style: const TextStyle(
-              color: grey500,
-              fontSize: textSmall,
-            ),
-          ),
-        ],
+    );
+  }
+
+  Container userName() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5.0),
+      child: Text(
+        createName()!,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: textbig,
+        ),
+      ),
+    );
+  }
+
+  Text userEmail() {
+    return Text(
+      email!,
+      style: const TextStyle(
+        color: grey500,
+        fontSize: textSmall,
       ),
     );
   }
