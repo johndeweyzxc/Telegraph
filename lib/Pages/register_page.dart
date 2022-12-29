@@ -1,9 +1,5 @@
-// ignore_for_file: sized_box_for_whitespace, depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/const_var.dart';
-import 'package:telegraph/Auth/sign_in_email.dart';
 import 'package:telegraph/Controller/user_controller.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -19,87 +15,124 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController confirmController = TextEditingController();
   bool showPassword = false;
 
-  AppBar appBar() {
-    return AppBar(
-      backgroundColor: deepPurple500,
-      title: const Text("Create an account"),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: deepPurple500,
+        title: const Text("Create an account"),
+      ),
+      body: Center(
+        child: Container(
+          width: widthScreen(context) - 50.0,
+          child: pageBody(),
+        ),
+      ),
     );
   }
 
-  // This is where the email, password, confirm password and register button
-  // is located.
-  Container pageBody() {
+  Container logInInstead() {
     return Container(
-      width: widthScreen(context) - 50.0,
+      margin: const EdgeInsets.only(bottom: 25.0),
       child: Column(
-        children: [
-          Expanded(
-            flex: 4,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RegisterInput(
-                  label: "Email",
-                  password: false,
-                  controller: emailController,
-                ),
-                RegisterInput(
-                  label: "Password",
-                  password: true,
-                  controller: passwordController,
-                ),
-                RegisterInput(
-                  label: "Confirm Password",
-                  password: true,
-                  controller: confirmController,
-                ),
-                RegisterButton(
-                  register: () async {
-                    // Password and confirm password did not match
-                    if (passwordController.text != confirmController.text) {
-                      // Debug print
-                      return;
-                    }
-
-                    String? signUp = await UserController().signUpEmailPassword(
-                      emailController.text,
-                      passwordController.text,
-                    );
-
-                    if (signUp != 'Success') {
-                      // Debug print
-                      // An error occurs
-                    }
-                  },
-                ),
-                const PrivacyPolicy(),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 25.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  LoginInstead(),
-                ],
-              ),
-            ),
-          ),
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: const [
+          LoginInstead(),
         ],
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: appBar(),
-      body: Center(
-        child: pageBody(),
+  Expanded expandedInputs(List<Widget> views) {
+    return Expanded(
+      flex: 4,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: views,
       ),
+    );
+  }
+
+  Column columnView(contents) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: contents,
+          ),
+        ),
+        const Expanded(
+          child: LoginInstead(),
+        ),
+      ],
+    );
+  }
+
+  // The list of the widget from email inputs up to privacy policy
+  List<Widget> contents() {
+    return [
+      RegisterInput(
+        label: "Email",
+        password: false,
+        controller: emailController,
+      ),
+      RegisterInput(
+        label: "Password",
+        password: true,
+        controller: passwordController,
+      ),
+      RegisterInput(
+        label: "Confirm Password",
+        password: true,
+        controller: confirmController,
+      ),
+      RegisterButton(
+        emailCtrl: emailController,
+        passwordCtrl: passwordController,
+        confirmCtrl: confirmController,
+      ),
+      const PrivacyPolicy(),
+    ];
+  }
+
+  Widget orientationBasedWidget(Orientation orientation, bool mobileLayout) {
+    // User changes orientation to portrait
+    if (orientation == Orientation.portrait) {
+      return columnView(contents());
+    }
+    // User changes orientation to landscape
+    else {
+      List<Widget> newContent = contents();
+      newContent.add(logInInstead());
+      // Screen is mobile size
+      if (mobileLayout) {
+        return ListView(
+          children: newContent,
+        );
+      }
+      // Screen is tablet size
+      else {
+        return columnView(contents());
+      }
+    }
+  }
+
+  // This is where the email, password, confirm password and register button
+  // is located.
+  OrientationBuilder pageBody() {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        // The equivalent of the "smallestWidth" qualifier on Android.
+        var shortestSide = MediaQuery.of(context).size.shortestSide;
+
+        // Determine if we should use mobile layout or not, 600 here is
+        // a common breakpoint for a typical 7-inch tablet.
+        final bool useMobileLayout = shortestSide < 600;
+        return orientationBasedWidget(orientation, useMobileLayout);
+      },
     );
   }
 }
@@ -123,13 +156,27 @@ class RegisterInput extends StatefulWidget {
 
 class _RegisterInputState extends State<RegisterInput> {
   bool showPassword = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5.0, top: 10.0),
+      child: TextFormField(
+        controller: widget.controller,
+        style: const TextStyle(fontSize: textSmall),
+        decoration: inputDecoration(),
+        obscureText: obscureText(),
+        maxLength: 40,
+      ),
+    );
+  }
+
   OutlineInputBorder outline = const OutlineInputBorder(
     borderSide: BorderSide(color: deepPurple500),
   );
 
-  // Returns an icon 'visibility' if the input type is password,
-  // otherwise return a 'close' icon
   IconButton isPassword() {
+    // Input type is password
     if (widget.password) {
       return IconButton(
         onPressed: () {
@@ -139,7 +186,9 @@ class _RegisterInputState extends State<RegisterInput> {
         },
         icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
       );
-    } else {
+    }
+    // Input type is not a password
+    else {
       return IconButton(
         onPressed: () {
           widget.controller.clear();
@@ -187,42 +236,59 @@ class _RegisterInputState extends State<RegisterInput> {
       prefixIcon: startIcon,
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15.0),
-      child: TextFormField(
-        controller: widget.controller,
-        style: const TextStyle(fontSize: textSmall),
-        decoration: inputDecoration(),
-        obscureText: obscureText(),
-        maxLength: 40,
-      ),
-    );
-  }
 }
 
 // Register button to create a new user
 class RegisterButton extends StatelessWidget {
-  final VoidCallback register;
+  final TextEditingController emailCtrl;
+  final TextEditingController passwordCtrl;
+  final TextEditingController confirmCtrl;
 
-  const RegisterButton({super.key, required this.register});
+  const RegisterButton({
+    super.key,
+    required this.emailCtrl,
+    required this.passwordCtrl,
+    required this.confirmCtrl,
+  });
 
   @override
   Widget build(BuildContext context) {
-    ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-      padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
-      foregroundColor: white,
-      backgroundColor: deepPurple500,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: buttonStyle(),
+              onPressed: submitNewAccount,
+              child: buttonText(),
+            ),
+          ),
+        ],
       ),
     );
+  }
 
-    Text buttonText = const Text(
+  void submitNewAccount() async {
+    // Password and confirm password did not match
+    if (passwordCtrl.text != confirmCtrl.text) {
+      // Debug print
+      return;
+    }
+
+    String? signUp = await UserController().signUpEmailPassword(
+      emailCtrl.text,
+      passwordCtrl.text,
+    );
+
+    if (signUp != 'Success') {
+      // Debug print
+      // An error occurs
+    }
+  }
+
+  Text buttonText() {
+    return const Text(
       "REGISTER",
       style: TextStyle(
         fontSize: textbig,
@@ -230,19 +296,17 @@ class RegisterButton extends StatelessWidget {
         letterSpacing: 2.0,
       ),
     );
+  }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              style: buttonStyle,
-              onPressed: register,
-              child: buttonText,
-            ),
-          ),
-        ],
+  ButtonStyle buttonStyle() {
+    return ElevatedButton.styleFrom(
+      padding: const EdgeInsets.fromLTRB(40.0, 10.0, 40.0, 10.0),
+      foregroundColor: white,
+      backgroundColor: deepPurple500,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10.0),
+        ),
       ),
     );
   }
@@ -257,44 +321,49 @@ class PrivacyPolicy extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 15.0),
       child: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 5.0),
-            child: const Text(
-              "By signing up you agree to Telegraph's",
-              style: TextStyle(color: black),
-            ),
-          ),
+          bySigningUp(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  "Privacy Policy",
-                  style: TextStyle(
-                    color: lightBlue600,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 2.0, right: 2.0),
-                child: const Text(
-                  "and",
-                  style: TextStyle(color: black),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  "Terms of Use.",
-                  style: TextStyle(
-                      color: lightBlue600, fontWeight: FontWeight.bold),
-                ),
-              ),
+              privacyAndTerms('Privacy Policy', () {}),
+              seperator(),
+              privacyAndTerms('Terms of Use', () {}),
             ],
-          ),
+          )
         ],
+      ),
+    );
+  }
+
+  GestureDetector privacyAndTerms(String text, VoidCallback onTapCallback) {
+    return GestureDetector(
+      onTap: onTapCallback,
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: lightBlue600,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Container seperator() {
+    return Container(
+      margin: const EdgeInsets.only(left: 2.0, right: 2.0),
+      child: const Text(
+        "and",
+        style: TextStyle(color: black),
+      ),
+    );
+  }
+
+  Container bySigningUp() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5.0),
+      child: const Text(
+        "By signing up you agree to Telegraph's",
+        style: TextStyle(color: black),
       ),
     );
   }
@@ -304,43 +373,40 @@ class PrivacyPolicy extends StatelessWidget {
 class LoginInstead extends StatelessWidget {
   const LoginInstead({super.key});
 
-  Text loginInsteadText() {
-    const TextStyle textStyle = TextStyle(color: lightBlue600);
-
-    return const Text(
-      "Login instead?",
-      style: textStyle,
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        haveAccount(),
+        loginInstead(),
+      ],
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Text haveAccount() {
+    return const Text(
+      "Have an account?",
+      style: TextStyle(
+        color: grey500,
+        fontSize: textSmall,
+      ),
+    );
+  }
+
+  Container loginInstead() {
     return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "Have an account?",
-            style: TextStyle(
-              color: grey500,
-              fontSize: textSmall,
-            ),
+      margin: const EdgeInsets.only(left: 5.0),
+      child: GestureDetector(
+        onTap: () {},
+        child: const Text(
+          "Login instead",
+          style: TextStyle(
+            color: lightBlue600,
+            fontSize: textSmall,
+            fontWeight: FontWeight.bold,
           ),
-          Container(
-            margin: const EdgeInsets.only(left: 5.0),
-            child: GestureDetector(
-              onTap: () {},
-              child: const Text(
-                "Login instead",
-                style: TextStyle(
-                  color: lightBlue600,
-                  fontSize: textSmall,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
