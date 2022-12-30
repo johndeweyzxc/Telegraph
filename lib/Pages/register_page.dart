@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegraph/Pages/login_page.dart';
 import 'package:telegraph/const_var.dart';
 import 'package:telegraph/Controller/user_controller.dart';
 
@@ -93,6 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
         emailCtrl: emailController,
         passwordCtrl: passwordController,
         confirmCtrl: confirmController,
+        context: context,
       ),
       const PrivacyPolicy(),
     ];
@@ -236,12 +238,14 @@ class RegisterButton extends StatelessWidget {
   final TextEditingController emailCtrl;
   final TextEditingController passwordCtrl;
   final TextEditingController confirmCtrl;
+  final BuildContext context;
 
   const RegisterButton({
     super.key,
     required this.emailCtrl,
     required this.passwordCtrl,
     required this.confirmCtrl,
+    required this.context,
   });
 
   @override
@@ -265,7 +269,12 @@ class RegisterButton extends StatelessWidget {
   void submitNewAccount() async {
     // Password and confirm password did not match
     if (passwordCtrl.text != confirmCtrl.text) {
-      // Debug print
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return invalidInputDialog('Those passwords did not match');
+        },
+      );
       return;
     }
 
@@ -274,10 +283,44 @@ class RegisterButton extends StatelessWidget {
       passwordCtrl.text,
     );
 
+    // If therer is an error creating a user account
     if (signUp != 'Success') {
-      // Debug print
-      // An error occurs
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return invalidInputDialog(signUp.toString());
+        },
+      );
     }
+  }
+
+  AlertDialog invalidInputDialog(String errorContent) {
+    return AlertDialog(
+      title: const Text("Error"),
+      content: Text(errorContent),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("Ok"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return const LoginPage();
+                },
+              ),
+            );
+          },
+          child: const Text("Login Instead"),
+        ),
+      ],
+      elevation: 24.0,
+    );
   }
 
   Text buttonText() {

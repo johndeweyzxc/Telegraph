@@ -103,16 +103,9 @@ class _LoginPageState extends State<LoginPage> {
         controller: passwordController,
       ),
       LoginButton(
-        signIn: () async {
-          String? authenticate = await UserController().signInEmailPassword(
-            emailController.text,
-            passwordController.text,
-          );
-
-          if (authenticate != 'Success') {
-            // Debug print
-          }
-        },
+        email: emailController,
+        password: passwordController,
+        context: context,
       ),
       const ForgotPassword(),
       const LoginWith(),
@@ -244,9 +237,16 @@ class _TextInputState extends State<LoginTextInput> {
 
 // Login button authenticates with the firebase
 class LoginButton extends StatelessWidget {
-  final VoidCallback signIn;
+  final TextEditingController email;
+  final TextEditingController password;
+  final BuildContext context;
 
-  const LoginButton({super.key, required this.signIn});
+  const LoginButton({
+    super.key,
+    required this.email,
+    required this.password,
+    required this.context,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -257,12 +257,67 @@ class LoginButton extends StatelessWidget {
           Expanded(
             child: ElevatedButton(
               style: buttonStyle(),
-              onPressed: signIn,
+              onPressed: initiateSignIn,
               child: buttonText(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void initiateSignIn() async {
+    if (email.text == "" || password.text == "") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return invalidInputDialog('Email and pasword cannot be empty.');
+        },
+      );
+      return;
+    }
+
+    String? authenticate = await UserController().signInEmailPassword(
+      email.text,
+      password.text,
+    );
+
+    // If there is an error authenticating
+    if (authenticate != 'Success') {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return invalidInputDialog(authenticate.toString());
+        },
+      );
+    }
+  }
+
+  AlertDialog invalidInputDialog(String errorContent) {
+    return AlertDialog(
+      title: const Text("Error"),
+      content: Text(errorContent),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("Ok"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) {
+                  return const RegisterPage();
+                },
+              ),
+            );
+          },
+          child: const Text("Create an Account"),
+        ),
+      ],
     );
   }
 
