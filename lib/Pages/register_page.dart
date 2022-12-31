@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telegraph/Pages/login_page.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 import 'package:telegraph/Controller/user_controller.dart';
 
 class RegisterPage extends StatefulWidget {

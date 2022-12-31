@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
 import 'package:telegraph/Pages/about.dart';
 import 'package:telegraph/Pages/messages.dart';

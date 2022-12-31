@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:telegraph/Auth/sign_in_google.dart';
 import 'package:telegraph/Pages/register_page.dart';
 import 'package:telegraph/Controller/user_controller.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

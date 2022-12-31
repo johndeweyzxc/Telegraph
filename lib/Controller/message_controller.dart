@@ -23,19 +23,12 @@ class MessageController {
     // Create document and write data to Firebase
     await docMsg
         .set(messageJson)
-        .then(
-          (value) => {
-            debugPrint(
-              """[DEBUG PRINT] -> Successfully 
-                saved data to the database""",
-            )
-          },
-        )
+        .then((value) => {
+              debugPrint(
+                  "[DEBUG PRINT] -> Successfully saved data to the database")
+            })
         .onError(
-          (error, stackTrace) => {
-            debugPrint('[DEBUG PRINT] -> $error'),
-          },
-        );
+            (error, stackTrace) => {debugPrint('[DEBUG PRINT] -> $error')});
   }
 
   // Retrieve all the message from the database

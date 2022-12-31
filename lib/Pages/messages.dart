@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
 import 'package:telegraph/Models/message_model.dart';
 import 'package:telegraph/Widgets/sidebar_menu.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 import 'package:telegraph/Controller/message_controller.dart';
 
 class MessagesPage extends StatefulWidget {

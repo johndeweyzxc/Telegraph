@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 
 class EnableDarkModePage extends StatefulWidget {
   const EnableDarkModePage({super.key});
@@ -15,6 +15,12 @@ class _EnableDarkModePageState extends State<EnableDarkModePage> {
       appBar: AppBar(
         backgroundColor: deepPurple500,
         title: const Text("Enable dark mode"),
+      ),
+      body: const Center(
+        child: Text(
+          "This page is under development",
+          style: TextStyle(color: grey500),
+        ),
       ),
     );
   }

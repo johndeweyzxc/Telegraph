@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 
 class SideBarHeader extends StatelessWidget {
   final String? photoUrl;

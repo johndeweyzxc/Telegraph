@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:telegraph/const_var.dart';
+import 'package:telegraph/defaults.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -10,6 +10,12 @@ class AboutPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: deepPurple500,
         title: const Text("About"),
+      ),
+      body: const Center(
+        child: Text(
+          "This page is under development",
+          style: TextStyle(color: grey500),
+        ),
       ),
     );
   }
