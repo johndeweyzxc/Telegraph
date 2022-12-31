@@ -4,7 +4,7 @@ import 'package:telegraph/Models/message_model.dart';
 
 class MessageController {
   // Create a new document message
-  Future createMessage(String? uname, String? uemail, String? uid, String msg,
+  Future createMessage(String? uname, String? uemail, String msg,
       String photoUrl, Timestamp timeStamp) async {
     // Reference to the document
     final docMsg = FirebaseFirestore.instance.collection('messages').doc();
@@ -12,7 +12,6 @@ class MessageController {
     final messageModel = MessageModel(
       uname: uname,
       uemail: uemail,
-      uid: uid,
       msg: msg,
       photoUrl: photoUrl,
       timeStamp: timeStamp,
@@ -41,7 +40,7 @@ class MessageController {
     // Reference to the messages collection
     final colRef = FirebaseFirestore.instance.collection('messages');
     // Order the messages by timestamp, most recent last
-    final ordered = colRef.orderBy('timeStamp', descending: false);
+    final ordered = colRef.orderBy('timeStamp', descending: false).limit(30);
     final data = ordered.snapshots();
 
     return data.map((snapshot) => snapshot.docs.map(modelObject).toList());

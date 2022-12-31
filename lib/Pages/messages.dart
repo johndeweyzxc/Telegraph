@@ -133,7 +133,7 @@ class IndividualMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Row content() {
-      bool isSelfMessage = currentUser.uid == messageModel.uid;
+      bool isSelfMessage = currentUser.email == messageModel.uemail;
 
       if (isSelfMessage) {
         return Row(
@@ -168,11 +168,13 @@ class IndividualMessage extends StatelessWidget {
 
   dynamic profileImage() {
     String localPhoto = 'assets/images/flutter-symbol.png';
+    String startingUrl = 'https://lh3.googleusercontent.com/a/';
+    String uniqueUrl = messageModel.photoUrl;
 
-    if (messageModel.photoUrl == 'No profile photo') {
+    if (messageModel.photoUrl == '') {
       return AssetImage(localPhoto);
     } else {
-      return NetworkImage(messageModel.photoUrl);
+      return NetworkImage('$startingUrl$uniqueUrl');
     }
   }
 
@@ -270,10 +272,16 @@ class _MessageInputState extends State<MessageInput> {
     );
   }
 
+  String formatPhotoUrl(String url) {
+    List<String> substrings = url.split("com/a/");
+    return substrings.last;
+  }
+
   IconButton sendButton() {
     Timestamp currentTime = Timestamp.now();
     User? currentUser = widget.currentUser;
-    dynamic photoUrl = currentUser?.photoURL ?? 'No profile photo';
+    String photoUrl = currentUser?.photoURL ?? '';
+    String formattedUrl = photoUrl != '' ? formatPhotoUrl(photoUrl) : '';
 
     return IconButton(
       onPressed: () {
@@ -285,9 +293,8 @@ class _MessageInputState extends State<MessageInput> {
             .createMessage(
               createName(),
               currentUser?.email,
-              currentUser?.uid,
               inputController.text,
-              photoUrl,
+              formattedUrl,
               currentTime,
             )
             .then((value) => {removeFocusAndScroll()});
