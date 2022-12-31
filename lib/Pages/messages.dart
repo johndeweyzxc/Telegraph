@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,7 @@ import 'package:telegraph/Models/message_model.dart';
 import 'package:telegraph/Widgets/sidebar_menu.dart';
 import 'package:telegraph/defaults.dart';
 import 'package:telegraph/Controller/message_controller.dart';
+import 'package:telegraph/Widgets/error_dialog.dart';
 
 class MessagesPage extends StatefulWidget {
   const MessagesPage({super.key});
@@ -270,6 +273,7 @@ class MessageInput extends StatefulWidget {
 
 class _MessageInputState extends State<MessageInput> {
   final TextEditingController inputController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +302,24 @@ class _MessageInputState extends State<MessageInput> {
 
     return IconButton(
       onPressed: () {
-        if (inputController.text == "") {
+        if (inputController.text.isEmpty) {
+          return;
+        }
+
+        if (inputController.text.length >= 200) {
+          inputController.clear();
+          focusNode.unfocus();
+          showDialog(
+            context: context,
+            builder: (BuildContext cotext) {
+              return const ErrorDialogFunc(
+                errorContent:
+                    'Text length greater than 200 characters is not allowed.',
+                optionPage: null,
+                optionName: null,
+              );
+            },
+          );
           return;
         }
 
@@ -320,7 +341,7 @@ class _MessageInputState extends State<MessageInput> {
   // on the textfield and scroll to the end of the list.
   void removeFocusAndScroll() {
     inputController.clear();
-    FocusScope.of(context).unfocus();
+    focusNode.unfocus();
     Future.delayed(
       const Duration(milliseconds: 500),
       () {
@@ -341,6 +362,7 @@ class _MessageInputState extends State<MessageInput> {
 
     return Expanded(
       child: TextField(
+        focusNode: focusNode,
         textAlignVertical: TextAlignVertical.top,
         controller: inputController,
         decoration: InputDecoration(
