@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:telegraph/Auth/auth_instance.dart';
@@ -81,32 +82,22 @@ class MessageView extends StatefulWidget {
 }
 
 class _MessageViewState extends State<MessageView> {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<List<MessageModel>>(
-      stream: MessageController().messageStream(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          debugPrint("Oops! Something went wrong");
-        } else if (snapshot.hasData) {
-          final message = snapshot.data!;
-          return listBuilder(message);
-        }
+  List<MessageModel> listOfMessage = [];
 
-        return const Center(
-          child: CircularProgressIndicator.adaptive(),
-        );
-      },
-    );
+  @override
+  void initState() {
+    super.initState();
+    readMessage();
   }
 
-  ListView listBuilder(List<MessageModel> messageData) {
+  @override
+  Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: messageData.length,
+      itemCount: listOfMessage.length,
       scrollDirection: Axis.vertical,
       controller: widget.scrollController,
       itemBuilder: (BuildContext context, int index) {
-        MessageModel messageModel = messageData[index];
+        MessageModel messageModel = listOfMessage[index];
 
         return IndividualMessage(
           messageModel: messageModel,
@@ -115,6 +106,19 @@ class _MessageViewState extends State<MessageView> {
         );
       },
     );
+  }
+
+  // Retrieve all the message from the database
+  void readMessage() {
+    // Check if the widget is still part of the tree
+    if (mounted) {
+      final DatabaseReference firebaseRef = FirebaseDatabase.instance.ref();
+      firebaseRef.child('Messages').onChildAdded.listen((data) {
+        MessageModel messageModel =
+            MessageModel.fromJson(data.snapshot.value as Map);
+        setState(() => listOfMessage.add(messageModel));
+      });
+    }
   }
 }
 
@@ -271,7 +275,7 @@ class _MessageInputState extends State<MessageInput> {
   }
 
   IconButton sendButton() {
-    Timestamp currentTime = Timestamp.now();
+    int currentTime = Timestamp.now().seconds;
     User? currentUser = widget.currentUser;
     dynamic photoUrl = currentUser?.photoURL ?? 'No profile photo';
 

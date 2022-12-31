@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class MessageModel {
   final String? uname;
   final String? uemail;
   final String? uid;
   final String msg;
   final String photoUrl;
-  final Timestamp timeStamp;
+  final int timeStamp;
 
   const MessageModel({
     required this.uname,
@@ -17,7 +15,7 @@ class MessageModel {
     required this.timeStamp,
   });
 
-  Map<String, dynamic> toJson() => {
+  Map<dynamic, dynamic> toJson() => {
         'uname': uname,
         'uemail': uemail,
         'uid': uid,
@@ -26,7 +24,7 @@ class MessageModel {
         'timeStamp': timeStamp,
       };
 
-  static MessageModel fromJson(Map<String, dynamic> json) => MessageModel(
+  static MessageModel fromJson(Map<dynamic, dynamic> json) => MessageModel(
         uname: json['uname'],
         uemail: json['uemail'],
         uid: json['uid'],
