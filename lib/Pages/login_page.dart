@@ -4,6 +4,7 @@ import 'package:telegraph/Auth/sign_in_google.dart';
 import 'package:telegraph/Pages/register_page.dart';
 import 'package:telegraph/Controller/user_controller.dart';
 import 'package:telegraph/defaults.dart';
+import 'package:telegraph/Widgets/error_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -271,7 +272,11 @@ class LoginButton extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return invalidInputDialog('Email and pasword cannot be empty.');
+          return const ErrorDialogFunc(
+            errorContent: 'Email and password cannot be empty.',
+            optionPage: RegisterPage(),
+            optionName: 'Register Instead',
+          );
         },
       );
       return;
@@ -287,38 +292,14 @@ class LoginButton extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return invalidInputDialog(authenticate.toString());
+          return ErrorDialogFunc(
+            errorContent: authenticate,
+            optionPage: const RegisterPage(),
+            optionName: 'Register Instead',
+          );
         },
       );
     }
-  }
-
-  AlertDialog invalidInputDialog(String errorContent) {
-    return AlertDialog(
-      title: const Text("Error"),
-      content: Text(errorContent),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text("Ok"),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return const RegisterPage();
-                },
-              ),
-            );
-          },
-          child: const Text("Create an Account"),
-        ),
-      ],
-    );
   }
 
   ButtonStyle buttonStyle() {

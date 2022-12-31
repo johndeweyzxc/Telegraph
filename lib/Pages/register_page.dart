@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:telegraph/Pages/login_page.dart';
 import 'package:telegraph/defaults.dart';
 import 'package:telegraph/Controller/user_controller.dart';
+import 'package:telegraph/Widgets/error_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -272,7 +273,11 @@ class RegisterButton extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return invalidInputDialog('Those passwords did not match');
+          return const ErrorDialogFunc(
+            errorContent: 'Those passwords did not match',
+            optionPage: null,
+            optionName: null,
+          );
         },
       );
       return;
@@ -283,44 +288,24 @@ class RegisterButton extends StatelessWidget {
       passwordCtrl.text,
     );
 
+    String? errorContent = signUp;
+    if (signUp == "Given String is empty or null") {
+      errorContent = "Some input text field are empty.";
+    }
+
     // If therer is an error creating a user account
     if (signUp != 'Success') {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return invalidInputDialog(signUp.toString());
+          return ErrorDialogFunc(
+            errorContent: errorContent,
+            optionPage: const LoginPage(),
+            optionName: "Login Instead",
+          );
         },
       );
     }
-  }
-
-  AlertDialog invalidInputDialog(String errorContent) {
-    return AlertDialog(
-      title: const Text("Error"),
-      content: Text(errorContent),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text("Ok"),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return const LoginPage();
-                },
-              ),
-            );
-          },
-          child: const Text("Login Instead"),
-        ),
-      ],
-      elevation: 24.0,
-    );
   }
 
   Text buttonText() {
