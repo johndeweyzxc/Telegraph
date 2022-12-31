@@ -1,16 +1,9 @@
-# telegraph
+# Telegraph
 
-A new Flutter project.
+Simple real time messaging app for Android and IOS, written in Dart language using the Flutter framework. The backend is Firebase Firestore and for authentication I used Firebase Authentication. Users can sign in with their google accounts.
 
-## Getting Started
+# Quick preview
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<div>
+    If you notice any lags, this is because the app is in debug mode and does not reflect the performance in release mode.
+</div>
