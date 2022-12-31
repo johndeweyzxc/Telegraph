@@ -16,6 +16,7 @@ class MessagesPage extends StatefulWidget {
 
 class _MessagesPageState extends State<MessagesPage> {
   final User? user = AuthInstance().firebaseAuth.currentUser;
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,14 @@ class _MessagesPageState extends State<MessagesPage> {
     return Column(
       children: [
         Expanded(
-          child: MessageView(user: user!),
+          child: MessageView(
+            user: user!,
+            scrollController: scrollController,
+          ),
         ),
         MessageInput(
           currentUser: user,
+          scrollController: scrollController,
         ),
       ],
     );
@@ -64,7 +69,12 @@ class _MessagesPageState extends State<MessagesPage> {
 
 class MessageView extends StatefulWidget {
   final User user;
-  const MessageView({super.key, required this.user});
+  final ScrollController scrollController;
+  const MessageView({
+    super.key,
+    required this.user,
+    required this.scrollController,
+  });
 
   @override
   State<MessageView> createState() => _MessageViewState();
@@ -94,12 +104,14 @@ class _MessageViewState extends State<MessageView> {
     return ListView.builder(
       itemCount: messageData.length,
       scrollDirection: Axis.vertical,
+      controller: widget.scrollController,
       itemBuilder: (BuildContext context, int index) {
         MessageModel messageModel = messageData[index];
 
         return IndividualMessage(
           messageModel: messageModel,
           currentUser: widget.user,
+          scrollController: widget.scrollController,
         );
       },
     );
@@ -109,11 +121,13 @@ class _MessageViewState extends State<MessageView> {
 class IndividualMessage extends StatelessWidget {
   final MessageModel messageModel;
   final User currentUser;
+  final ScrollController scrollController;
 
   const IndividualMessage({
     super.key,
     required this.messageModel,
     required this.currentUser,
+    required this.scrollController,
   });
 
   @override
@@ -166,6 +180,7 @@ class IndividualMessage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(right: 5.0, left: 5.0),
       child: CircleAvatar(
+        backgroundColor: white,
         backgroundImage: profileImage(),
       ),
     );
@@ -226,8 +241,13 @@ class IndividualMessage extends StatelessWidget {
 
 class MessageInput extends StatefulWidget {
   final User? currentUser;
+  final ScrollController scrollController;
 
-  const MessageInput({super.key, required this.currentUser});
+  const MessageInput({
+    super.key,
+    required this.currentUser,
+    required this.scrollController,
+  });
 
   @override
   State<MessageInput> createState() => _MessageInputState();
@@ -257,16 +277,39 @@ class _MessageInputState extends State<MessageInput> {
 
     return IconButton(
       onPressed: () {
-        MessageController().createMessage(
-          createName(),
-          currentUser?.email,
-          currentUser?.uid,
-          inputController.text,
-          photoUrl,
-          currentTime,
-        );
+        if (inputController.text == "") {
+          return;
+        }
+
+        MessageController()
+            .createMessage(
+              createName(),
+              currentUser?.email,
+              currentUser?.uid,
+              inputController.text,
+              photoUrl,
+              currentTime,
+            )
+            .then((value) => {removeFocusAndScroll()});
       },
       icon: const Icon(Icons.send_outlined),
+    );
+  }
+
+  // After sending a message, clear the text on the textfield, remove focus
+  // on the textfield and scroll to the end of the list.
+  void removeFocusAndScroll() {
+    inputController.clear();
+    FocusScope.of(context).unfocus();
+    Future.delayed(
+      const Duration(milliseconds: 1500),
+      () {
+        widget.scrollController.animateTo(
+          widget.scrollController.position.maxScrollExtent - 5.0,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      },
     );
   }
 
