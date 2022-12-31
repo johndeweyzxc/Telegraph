@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:telegraph/Models/message_model.dart';
 
 class MessageController {
@@ -20,7 +21,21 @@ class MessageController {
     final messageJson = messageModel.toJson();
 
     // Create document and write data to Firebase
-    await docMsg.set(messageJson);
+    await docMsg
+        .set(messageJson)
+        .then(
+          (value) => {
+            debugPrint(
+              """[DEBUG PRINT] -> Successfully 
+                saved data to the database""",
+            )
+          },
+        )
+        .onError(
+          (error, stackTrace) => {
+            debugPrint('[DEBUG PRINT] -> $error'),
+          },
+        );
   }
 
   // Retrieve all the message from the database
@@ -32,7 +47,7 @@ class MessageController {
 
     // Reference to the messages collection
     final colRef = FirebaseFirestore.instance.collection('messages');
-    // Order them by date, recent message appears on the end of the list.
+    // Order the messages by timestamp, most recent last
     final ordered = colRef.orderBy('timeStamp', descending: false);
     final data = ordered.snapshots();
 
