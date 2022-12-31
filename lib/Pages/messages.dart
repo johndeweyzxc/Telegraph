@@ -87,6 +87,7 @@ class _MessageViewState extends State<MessageView> {
       stream: MessageController().messageStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
+          // Debug error
           debugPrint("Oops! Something went wrong");
         } else if (snapshot.hasData) {
           final message = snapshot.data!;
@@ -101,6 +102,18 @@ class _MessageViewState extends State<MessageView> {
   }
 
   ListView listBuilder(List<MessageModel> messageData) {
+    if (widget.scrollController.hasClients) {
+      Future.delayed(const Duration(microseconds: 500)).then(
+        (value) => {
+          widget.scrollController.animateTo(
+            widget.scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOut,
+          ),
+        },
+      );
+    }
+
     return ListView.builder(
       itemCount: messageData.length,
       scrollDirection: Axis.vertical,
@@ -309,7 +322,7 @@ class _MessageInputState extends State<MessageInput> {
     inputController.clear();
     FocusScope.of(context).unfocus();
     Future.delayed(
-      const Duration(milliseconds: 1500),
+      const Duration(milliseconds: 500),
       () {
         widget.scrollController.animateTo(
           widget.scrollController.position.maxScrollExtent - 5.0,

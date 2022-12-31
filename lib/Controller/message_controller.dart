@@ -40,7 +40,8 @@ class MessageController {
     // Reference to the messages collection
     final colRef = FirebaseFirestore.instance.collection('messages');
     // Order the messages by timestamp, most recent last
-    final ordered = colRef.orderBy('timeStamp', descending: false).limit(30);
+    final ordered =
+        colRef.orderBy('timeStamp', descending: false).limitToLast(30);
     final data = ordered.snapshots();
 
     return data.map((snapshot) => snapshot.docs.map(modelObject).toList());
