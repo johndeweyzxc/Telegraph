@@ -47,5 +47,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>GIDClientID</key>
+    <string>813718562844-h7p3ij34a2ut55gucr300tf26f5lq2fj.apps.googleusercontent.com</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.813718562844-h7p3ij34a2ut55gucr300tf26f5lq2fj</string>
+        </array>
+      </dict>
+    </array>
 </dict>
 </plist>
